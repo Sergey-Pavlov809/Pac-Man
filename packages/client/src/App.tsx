@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import './App.css'
 
-function App() {
+function App(): JSX.Element {
   useEffect(() => {
-    const fetchServerData = async () => {
+    const fetchServerData = async (): Promise<void> => {
       const url = `http://localhost:${__SERVER_PORT__}`
       const response = await fetch(url)
       const data = await response.json()
