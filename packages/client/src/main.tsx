@@ -41,11 +41,7 @@ const router = createBrowserRouter([
   {
     path: '/topic',
     element: <div>/topic</div>,
-  },
-  {
-    path: '*',
-    element: <div>'*'</div>,
-  },
+  }
 ])
 
 
