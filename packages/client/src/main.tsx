@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { ErrorBoundary, RootBoundary } from './components/RootBoundary'
 
 const router = createBrowserRouter([
   {
@@ -48,10 +48,10 @@ const router = createBrowserRouter([
   },
 ])
 
+
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <RouterProvider router={router} />
-    </ErrorBoundary>
+      <RouterProvider router={router} fallbackElement={RootBoundary} />
   </React.StrictMode>
 )
