@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ErrorBoundary, RootBoundary } from './components/RootBoundary'
+import { RootBoundary } from './components/RootBoundary'
 
 const router = createBrowserRouter([
   {
