@@ -1,50 +1,55 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import { Main } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { routes } from './routes'
+import './index.css'
+import 'antd/dist/reset.css'
 import { RootBoundary } from './components/RootBoundary'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: routes.app(),
     element: <App />,
   },
   {
-    path: '/sign-in',
+    path: routes.signin(),
     element: <div>/sign-in</div>,
   },
   {
-    path: '/sign-up',
+    path: routes.signup(),
     element: <div>/sign-up</div>,
   },
   {
-    path: '/profile',
+    path: routes.profile(),
     element: <div>/profile</div>,
   },
   {
-    path: '/main',
-    element: <div>/main</div>,
+    path: routes.main(),
+    element: <Main />,
   },
   {
-    path: '/game',
+    path: routes.game(),
     element: <div>/game</div>,
   },
   {
-    path: '/leaderboard',
+    path: routes.leaderboard(),
     element: <div>/leaderboard</div>,
   },
   {
-    path: '/chat',
+    path: routes.forum(),
     element: <div>/chat</div>,
   },
   {
-    path: '/topic',
+    path: routes.topic(),
     element: <div>/topic</div>,
-  }
+  },
+  {
+    path: '*',
+    element: <div>*</div>,
+  },
 ])
-
-
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
