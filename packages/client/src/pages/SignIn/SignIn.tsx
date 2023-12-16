@@ -1,12 +1,12 @@
 import { Button, Checkbox, Form, Input } from 'antd'
 import './Styless.css'
 
-const onFinish = (values: unknown): undefined => {
+const onFinish = (values: unknown): void => {
   // eslint-disable-next-line no-console
   console.log('Success:', values)
 }
 
-const onFinishFailed = (errorInfo: unknown): undefined => {
+const onFinishFailed = (errorInfo: unknown): void => {
   // eslint-disable-next-line no-console
   console.log('Failed:', errorInfo)
 }
@@ -17,7 +17,7 @@ type FieldType = {
   remember?: string
 }
 //
-function SignIn(): React.FC {
+function SignIn(): JSX.Element {
   return (
     <div className="container">
       <h1>Авторизация</h1>
@@ -35,8 +35,8 @@ function SignIn(): React.FC {
             label="Username"
             name="username"
             rules={[
-              { required: true, message: 'Please input your username!' },
-              { len: 3, message: 'Length should be more then 3' },
+              { required: true, message: 'Пожалуйста, заполните поле' },
+              { len: 3, message: 'Длинна должна быть больше 3' },
             ]}>
             <Input />
           </Form.Item>
@@ -45,8 +45,8 @@ function SignIn(): React.FC {
             label="Password"
             name="password"
             rules={[
-              { required: true, message: 'Please input your password!' },
-              { len: 5, message: 'Length should be more then 5' },
+              { required: true, message: 'Пожалуйста, заполните поле' },
+              { len: 5, message: 'Длинна должна быть больше 5' },
             ]}>
             <Input.Password />
           </Form.Item>
