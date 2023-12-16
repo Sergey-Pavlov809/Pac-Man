@@ -32,7 +32,7 @@ function SignIn(): JSX.Element {
           onFinishFailed={onFinishFailed}
           autoComplete="off">
           <Form.Item<FieldType>
-            label="Username"
+            label="Логин"
             name="username"
             rules={[
               { required: true, message: 'Пожалуйста, заполните поле' },
@@ -42,7 +42,7 @@ function SignIn(): JSX.Element {
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="Password"
+            label="Пароль"
             name="password"
             rules={[
               { required: true, message: 'Пожалуйста, заполните поле' },
@@ -55,12 +55,12 @@ function SignIn(): JSX.Element {
             name="remember"
             valuePropName="checked"
             wrapperCol={{ offset: 8, span: 16 }}>
-            <Checkbox>Remember me</Checkbox>
+            <Checkbox>Запомнить меня</Checkbox>
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Submit
+              Войти
             </Button>
           </Form.Item>
         </Form>
