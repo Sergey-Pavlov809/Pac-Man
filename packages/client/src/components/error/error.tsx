@@ -1,9 +1,9 @@
 import React from 'react'
 import { useRouteError } from 'react-router-dom'
-import ghost from '../../assets/images/ghost.svg'
-import Four from '../../assets/images/four.svg'
-import Five from '../../assets/images/five.svg'
-import Zero from '../../assets/images/zero.svg'
+import GhostSvg from './ghostSvg'
+import FourSvg from './four'
+import ZeroSvg from './zero'
+import FiveSvg from './five'
 
 import { Typography, Flex, Divider, theme, ConfigProvider } from 'antd'
 
@@ -24,10 +24,11 @@ export const ErrorComponent: React.FC<ErrorProps> = ({
   type,
   message,
 }: ErrorProps) => {
+  const FirstDigit = type === '404' ? FourSvg : FiveSvg
+  const SecondDigit = type === '404' ? FourSvg : ZeroSvg
+
   const error = useRouteError()
   const errorFromRouter = error ? String(error) : 'Произошла неизвестная ошибка'
-  const firstDigit = type === '404' ? Four : Five
-  const secondDigit = type === '404' ? Four : Zero
   const { token } = theme.useToken()
 
   return (
@@ -38,25 +39,25 @@ export const ErrorComponent: React.FC<ErrorProps> = ({
       justify="center"
       vertical>
       <Flex align="center" justify="center">
-        <img
-          src={firstDigit}
-          alt="4"
-          width="268"
-          height="277"
-          style={{ marginRight: '-35px', marginLeft: '35px', zIndex: 1 }}
+        <FirstDigit
+          width={268}
+          height={277}
+          color={token.yellow4}
+          stroke={token.colorTextBase}
+          style={{ marginRight: '-35px', zIndex: 1 }}
         />
-        <object
-          data={ghost}
-          type="image/svg+xml"
-          width="304"
-          height="347"
-          style={{ marginLeft: '-35px', zIndex: 2 }}
+        <GhostSvg
+          width={304}
+          height={347}
+          color={token.blue3}
+          stroke={token.colorTextBase}
+          style={{ zIndex: 2 }}
         />
-        <img
-          src={secondDigit}
-          alt="4"
-          width="268"
-          height="277"
+        <SecondDigit
+          width={268}
+          height={277}
+          color={token.yellow4}
+          stroke={token.colorTextBase}
           style={{ marginLeft: '-35px', zIndex: 1 }}
         />
       </Flex>
