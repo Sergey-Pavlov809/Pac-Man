@@ -9,6 +9,7 @@ function App(): JSX.Element {
       const data = await response.json()
       console.log(data)
     }
+
     fetchServerData()
   }, [])
   return <div className="App">Вот тут будет жить ваше приложение :)</div>
