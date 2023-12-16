@@ -1,0 +1,1 @@
+export { RootBoundary } from './RootBoundary';
