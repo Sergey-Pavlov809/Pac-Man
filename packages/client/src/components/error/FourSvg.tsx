@@ -1,6 +1,6 @@
 import React, { SVGProps } from 'react'
 const SvgComponent: React.FC<SVGProps<SVGSVGElement>> = (
-  props: SVGProps<SVGSVGElement>,
+  props: SVGProps<SVGSVGElement>
 ) => (
   <svg
     viewBox="0 0 268 277"

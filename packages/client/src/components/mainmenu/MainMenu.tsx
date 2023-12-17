@@ -8,8 +8,12 @@ const items: MenuProps['items'] = [
     key: 'home',
   },
   {
-    label: 'Регистрация',
+    label: 'Логин',
     key: 'sign-up',
+  },
+  {
+    label: 'Регистрация',
+    key: 'registration',
   },
   {
     label: 'Профиль',
@@ -38,6 +42,10 @@ const items: MenuProps['items'] = [
   {
     label: '404',
     key: '404',
+  },
+  {
+    label: '500',
+    key: '500',
   },
 ]
 

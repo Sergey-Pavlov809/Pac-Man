@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router'
 import { Layout } from 'antd'
-import MainMenu from '../mainmenu/mainmenu'
+import MainMenu from '../mainmenu/MainMenu'
 
 const { Header, Content, Footer } = Layout
 
@@ -12,19 +12,34 @@ const { Header, Content, Footer } = Layout
 const Root = ({ children }: { children?: JSX.Element }): JSX.Element => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
+      <Header
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+        }}>
         <div className="demo-logo" />
         <MainMenu />
       </Header>
       <Content
         style={{
-          padding: '0 48px',
-          display: 'flex',
-          justifyContent: 'center',
+          padding: '10px 48px',
         }}>
         {children || <Outlet />}
       </Content>
-      <Footer style={{ textAlign: 'center' }}>
+      <Footer
+        style={{
+          position: 'sticky',
+          bottom: 0,
+          zIndex: 1,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         Pac Man ©2023 Created by Crimson Mavericks
       </Footer>
     </Layout>

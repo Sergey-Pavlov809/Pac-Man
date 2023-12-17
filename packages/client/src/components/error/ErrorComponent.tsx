@@ -1,9 +1,9 @@
 import React from 'react'
 import { useRouteError } from 'react-router-dom'
-import GhostSvg from './ghostSvg'
-import FourSvg from './four'
-import ZeroSvg from './zero'
-import FiveSvg from './five'
+import GhostSvg from './GhostSvg'
+import FourSvg from './FourSvg'
+import ZeroSvg from './ZeroSvg'
+import FiveSvg from './FiveSvg'
 
 import { Typography, Flex, Divider, theme, ConfigProvider } from 'antd'
 
@@ -42,21 +42,21 @@ export const ErrorComponent: React.FC<ErrorProps> = ({
         <FirstDigit
           width={268}
           height={277}
-          color={token.yellow4}
+          color={type === '404' ? token.yellow4 : token.gold4}
           stroke={token.colorTextBase}
           style={{ marginRight: '-35px', zIndex: 1 }}
         />
         <GhostSvg
           width={304}
           height={347}
-          color={token.blue3}
+          color={type === '404' ? token.blue3 : token.green3}
           stroke={token.colorTextBase}
           style={{ zIndex: 2 }}
         />
         <SecondDigit
           width={268}
           height={277}
-          color={token.yellow4}
+          color={type === '404' ? token.yellow4 : token.gold4}
           stroke={token.colorTextBase}
           style={{ marginLeft: '-35px', zIndex: 1 }}
         />
