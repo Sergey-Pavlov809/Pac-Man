@@ -4,8 +4,8 @@ import App from './App'
 import { Main } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './routes'
-import './index.css'
 import 'antd/dist/reset.css'
+import './index.css'
 import { RootBoundary } from './components/RootBoundary'
 
 const router = createBrowserRouter([
@@ -53,6 +53,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <RouterProvider router={router} fallbackElement={RootBoundary} />
+    <RouterProvider router={router} fallbackElement={RootBoundary} />
   </React.StrictMode>
 )
