@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main } from './pages'
+import { Main, Game } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './routes'
 import 'antd/dist/reset.css'
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
   },
   {
     path: routes.game(),
-    element: <div>/game</div>,
+    element: <Game />,
   },
   {
     path: routes.leaderboard(),
