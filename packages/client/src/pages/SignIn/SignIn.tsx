@@ -1,5 +1,4 @@
 import { Button, Flex, Form, Input, Typography } from 'antd'
-import './Styless.css'
 
 const onFinish = (values: unknown): void => {
   // eslint-disable-next-line no-console
