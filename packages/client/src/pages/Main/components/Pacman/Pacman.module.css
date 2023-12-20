@@ -1,0 +1,39 @@
+.animation {
+  position: relative;
+  overflow: hidden;
+  grid-area: 1/1;
+}
+
+.background {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+}
+
+.pacmanPath {
+  position: absolute;
+  max-width: 100%;
+  top: -4%;
+  left: 0;
+  pointer-events: none;
+}
+
+.pacman {
+  position: absolute;
+}
+
+.pacmanTop,
+.pacmanBottom {
+  border: solid min(1.5vw, 15px) yellow;
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.pacmanBottom {
+  position: absolute;
+  top: 0;
+  border-color: yellow;
+  border-right-color: transparent;
+  border-top-color: transparent;
+}
