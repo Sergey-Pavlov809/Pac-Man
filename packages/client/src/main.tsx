@@ -7,6 +7,7 @@ import { routes } from './routes'
 import 'antd/dist/reset.css'
 import './index.css'
 import { RootBoundary } from './components/RootBoundary'
+import NotFoundPage from './pages/404/404'
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <div>*</div>,
+    element: <NotFoundPage />,
   },
 ])
 
