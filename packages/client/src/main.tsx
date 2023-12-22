@@ -7,6 +7,7 @@ import { routes } from './routes'
 import 'antd/dist/reset.css'
 import './index.css'
 import { RootBoundary } from './components/RootBoundary'
+import Registration from './pages/registration/Registration'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: routes.signup(),
     element: <div>/sign-up</div>,
+  },
+  {
+    path: routes.registration(),
+    element: <Registration />,
   },
   {
     path: routes.profile(),
