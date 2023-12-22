@@ -1,0 +1,29 @@
+.container {
+  height: 100%;
+}
+
+.contentContainer {
+  overflow-y: auto;
+}
+
+.descriptionContainer {
+  display: grid;
+}
+
+.description {
+  place-self: center;
+  max-width: 600px;
+  grid-area: 1/1;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .description {
+    grid-area: revert;
+    max-width: revert;
+    background-color: rgba(0, 0, 0);
+    padding-inline: 50px;
+  }
+}
