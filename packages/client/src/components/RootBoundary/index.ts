@@ -1,1 +1,1 @@
-export { RootBoundary } from './RootBoundary';
+export { default as RootBoundary } from './RootBoundary'
