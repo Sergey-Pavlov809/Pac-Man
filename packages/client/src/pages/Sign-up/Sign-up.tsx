@@ -17,7 +17,7 @@ const tailFormItemLayout = {
   },
 }
 
-const Registration: React.FC = () => {
+export const SignUp: React.FC = () => {
   const [form] = Form.useForm()
 
   const onFinish = async (values: RegistrationFromApi): Promise<void> => {
@@ -53,7 +53,6 @@ const Registration: React.FC = () => {
         headStyle={{ textAlign: 'center' }}
         style={{ width: 410 }}>
         <Form
-          // className={css.form}
           form={form}
           name="register"
           onFinish={onFinish}
@@ -117,7 +116,7 @@ const Registration: React.FC = () => {
             rules={[
               {
                 required: true,
-                message: 'Пожалуйста, подтвердите свой пароль !',
+                message: 'Пожалуйста, подтвердите свой пароль!',
               },
               ({ getFieldValue }): RuleObject => ({
                 validator(_: RuleObject, value: string): Promise<void> {
@@ -141,5 +140,3 @@ const Registration: React.FC = () => {
     </Flex>
   )
 }
-
-export default Registration

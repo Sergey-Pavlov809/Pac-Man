@@ -1,13 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main } from './pages'
+import { Main, SignUp } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './routes'
 import 'antd/dist/reset.css'
 import './index.css'
 import { RootBoundary } from './components/RootBoundary'
-import Registration from './pages/registration/Registration'
 
 const router = createBrowserRouter([
   {
@@ -20,11 +19,7 @@ const router = createBrowserRouter([
   },
   {
     path: routes.signup(),
-    element: <div>/sign-up</div>,
-  },
-  {
-    path: routes.registration(),
-    element: <Registration />,
+    element: <SignUp />,
   },
   {
     path: routes.profile(),
