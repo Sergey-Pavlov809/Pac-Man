@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main, Game } from './pages'
+import { Main, Profile, Game } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { routes } from './routes'
 import 'antd/dist/reset.css'
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: routes.profile(),
-    element: <div>/profile</div>,
+    element: <Profile />,
   },
   {
     path: routes.main(),
