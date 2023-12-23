@@ -11,9 +11,11 @@
     "test": "jest ./"
   },
   "dependencies": {
-    "antd": "^5.12.1",
+    "antd": "^5.12.2",
+    "classnames": "^2.3.2",
     "dotenv": "^16.0.2",
     "eslint-config-prettier": "^8.5.0",
+    "gsap": "^3.12.3",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -39,5 +41,31 @@
     "typescript": "^4.8.2",
     "vite": "^3.0.7"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Родион Копытов",
+      "email": "rickrkeyrice@gmail.com",
+      "url": "https://github.com/rkeyrice"
+    },
+    {
+      "name": "Анастасия Шмелёва",
+      "email": "anastasiyaplague@gmail.com",
+      "url": "https://github.com/AnastasiaPlague"
+    },
+    {
+      "name": "Сергей Павлов",
+      "email": "sergey-pavlov2510@mail.ru",
+      "url": "https://github.com/Sergey-Pavlov809"
+    },
+    {
+      "name": "Никита Таранов",
+      "email": "nikitataranin@gmail.com",
+      "url": "https://github.com/DaoNik"
+    },
+    {
+      "name": "Дмитрий Аладьев",
+      "email": "aldmitol@yandex.ru"
+    }
+  ]
 }

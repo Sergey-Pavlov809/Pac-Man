@@ -1,0 +1,47 @@
+.boundary {
+  border: 6px solid #0000ff;
+  outline: 6px solid #0000ff;
+  outline-offset: -30px;
+}
+
+.root {
+  padding: 150px;
+  background: black;
+  color: white;
+}
+
+.avatarWrapper {
+  height: 100;
+  padding: 50px;
+  cursor: pointer;
+}
+
+.avatarImg {
+  border-radius: 50%;
+}
+
+.avatarWrapper:hover {
+  background-color: yellow;
+}
+
+.content {
+  min-width: 312px;
+  width: 100%;
+}
+
+.fullName {
+  font-size: 24px;
+  font-weight: 600;
+  color: #f65503;
+  text-align: center;
+}
+
+.label {
+  font-weight: 600;
+}
+
+@media (max-width: 1440px) {
+  .root {
+    padding: 75px;
+  }
+}

@@ -19,4 +19,9 @@ a {
 
 html {
   box-sizing: border-box;
+  /* background: black; */
+}
+
+#root {
+  height: 100%;
 }
