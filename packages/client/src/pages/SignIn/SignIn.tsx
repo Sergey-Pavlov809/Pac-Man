@@ -1,22 +1,42 @@
-import { Button, Flex, Form, Input, Typography } from 'antd'
+import { Button, Form, Input, Flex, Card } from 'antd'
+import yApiService from '../../services/y-api-service'
+import { LoginFromApi } from '../../types/FormApi'
 
-const onFinish = (values: unknown): void => {
-  // eslint-disable-next-line no-console
-  console.log('Success:', values)
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 4,
+    },
+  },
 }
 
-const onFinishFailed = (errorInfo: unknown): void => {
-  // eslint-disable-next-line no-console
-  console.log('Failed:', errorInfo)
-}
+const Login: React.FC = () => {
+  const [form] = Form.useForm()
 
-type FieldType = {
-  username: string
-  password: string
-}
+  const onFinish = async (values: LoginFromApi): Promise<void> => {
+    console.log('Received values of form: ', values)
+    try {
+      const response = await yApiService.login(values)
+      console.log('Result login', response)
+      await checkUserAuth()
+    } catch (error) {
+      console.log('Error login', error)
+    }
+  }
 
-function SignIn(): JSX.Element {
-  const { Title } = Typography
+  const checkUserAuth = async (): Promise<void> => {
+    try {
+      const response = await yApiService.getUser()
+      console.log('Result getUser', response)
+    } catch (error) {
+      console.log('Error getUser', error)
+    }
+  }
 
   return (
     <Flex
@@ -25,44 +45,37 @@ function SignIn(): JSX.Element {
       align="center"
       justify="center"
       vertical>
-      <Title>Авторизация</Title>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off">
-        <Form.Item<FieldType>
-          label="Логин"
-          name="username"
-          rules={[
-            { required: true, message: 'Пожалуйста, заполните поле' },
-            { min: 3, message: 'Длинна должна быть больше 3' },
-          ]}>
-          <Input />
-        </Form.Item>
+      <Card
+        title="Авторизация"
+        size="small"
+        headStyle={{ textAlign: 'center' }}
+        style={{ width: 410 }}>
+        <Form form={form} name="login" onFinish={onFinish} layout="vertical">
+          <Form.Item
+            name="login"
+            label="Логин"
+            rules={[{ required: true, message: 'Пожалуйста, введите логин.' }]}>
+            <Input />
+          </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Пароль"
-          name="password"
-          rules={[
-            { required: true, message: 'Пожалуйста, заполните поле' },
-            { min: 5, message: 'Длинна должна быть больше 5' },
-          ]}>
-          <Input.Password />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            label="Пароль"
+            rules={[
+              { required: true, message: 'Пожалуйста, введите пароль.' },
+            ]}>
+            <Input.Password />
+          </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Войти
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit" block>
+              Войти
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </Flex>
   )
 }
 
-export default SignIn
+export default Login
