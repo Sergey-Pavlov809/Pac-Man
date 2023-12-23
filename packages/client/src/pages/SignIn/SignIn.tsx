@@ -1,6 +1,7 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
 import yApiService from '../../services/y-api-service'
 import { LoginFromApi } from '../../types/FormApi'
+import { loginValidationSchema } from '../../utils/ruleSchemes'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -54,16 +55,14 @@ const Login: React.FC = () => {
           <Form.Item
             name="login"
             label="Логин"
-            rules={[{ required: true, message: 'Пожалуйста, введите логин.' }]}>
+            rules={loginValidationSchema.login}>
             <Input />
           </Form.Item>
 
           <Form.Item
             name="password"
             label="Пароль"
-            rules={[
-              { required: true, message: 'Пожалуйста, введите пароль.' },
-            ]}>
+            rules={loginValidationSchema.password}>
             <Input.Password />
           </Form.Item>
 
