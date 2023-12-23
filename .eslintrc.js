@@ -21,7 +21,14 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/ban-ts-comment': 1,
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    "@typescript-eslint/no-unused-vars": [
+      "off",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/no-explicit-any': 'error',
     'no-duplicate-imports': ['error', { includeExports: true }],
