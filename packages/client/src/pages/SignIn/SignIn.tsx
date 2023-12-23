@@ -41,7 +41,7 @@ const Login: React.FC = () => {
 
   return (
     <Flex
-      style={{ minHeight: '100%' }}
+      style={{ minHeight: '700px' }}
       gap="middle"
       align="center"
       justify="center"
