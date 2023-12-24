@@ -20,7 +20,7 @@ export const Main: React.FC = () => {
     <Flex vertical gap="middle">
       <div className={css.descriptionContainer}>
         <Flex className={css.description} vertical align="center" gap="middle">
-          <Title level={4}>
+          <Title level={4} style={{ color: 'white' }}>
             Попробуй себя в роли голодного жёлтого героя, который должен
             уклоняться от призраков и собирать точки. Прояви ловкость и тактику,
             чтобы победить в этом веселом квесте!
