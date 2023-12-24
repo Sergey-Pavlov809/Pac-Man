@@ -2,6 +2,7 @@ import { Button, Form, Input, Flex, Card } from 'antd'
 import yApiService from '../../services/y-api-service'
 import { LoginFromApi } from '../../types/FormApi'
 import { loginValidationSchema } from '../../utils/ruleSchemes'
+import { useNavigate } from 'react-router-dom'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -18,6 +19,7 @@ const tailFormItemLayout = {
 
 const Login: React.FC = () => {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
 
   const onFinish = async (values: LoginFromApi): Promise<void> => {
     console.log('Received values of form: ', values)
@@ -37,6 +39,10 @@ const Login: React.FC = () => {
     } catch (error) {
       console.log('Error getUser', error)
     }
+  }
+
+  const navigateToSiguUp = (): void => {
+    navigate('/sign-up')
   }
 
   return (
@@ -69,6 +75,15 @@ const Login: React.FC = () => {
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit" block>
               Войти
+            </Button>
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Button
+              type="link"
+              htmlType="submit"
+              block
+              onClick={navigateToSiguUp}>
+              Нет аккаунта?
             </Button>
           </Form.Item>
         </Form>
