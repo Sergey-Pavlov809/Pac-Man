@@ -3,7 +3,6 @@ import NotFoundPage from '../../pages/404/404'
 
 function RootBoundary(): React.ReactElement {
   const error = useRouteError()
-  console.log('Возникла ошибка')
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 404) {
