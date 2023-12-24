@@ -17,7 +17,7 @@ const tailFormItemLayout = {
   },
 }
 
-const Login: React.FC = () => {
+const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
@@ -92,4 +92,4 @@ const Login: React.FC = () => {
   )
 }
 
-export default Login
+export default SignIn
