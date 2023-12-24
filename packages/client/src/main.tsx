@@ -1,13 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import { Main, Profile, Game } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './pages/SignIn'
+import { routes } from './routes'
+import 'antd/dist/reset.css'
+import './index.css'
+import { RootBoundary } from './components/RootBoundary'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: routes.app(),
     element: <App />,
   },
   {
@@ -15,31 +19,31 @@ const router = createBrowserRouter([
     element: <SignIn />,
   },
   {
-    path: '/sign-up',
+    path: routes.signup(),
     element: <div>/sign-up</div>,
   },
   {
-    path: '/profile',
-    element: <div>/profile</div>,
+    path: routes.profile(),
+    element: <Profile />,
   },
   {
-    path: '/main',
-    element: <div>/main</div>,
+    path: routes.main(),
+    element: <Main />,
   },
   {
-    path: '/game',
-    element: <div>/game</div>,
+    path: routes.game(),
+    element: <Game />,
   },
   {
-    path: '/leaderboard',
+    path: routes.leaderboard(),
     element: <div>/leaderboard</div>,
   },
   {
-    path: '/chat',
+    path: routes.forum(),
     element: <div>/chat</div>,
   },
   {
-    path: '/topic',
+    path: routes.topic(),
     element: <div>/topic</div>,
   },
   {
@@ -50,6 +54,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} fallbackElement={<RootBoundary />} />
   </React.StrictMode>
 )
