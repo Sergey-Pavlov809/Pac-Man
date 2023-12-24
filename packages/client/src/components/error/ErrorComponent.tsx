@@ -9,17 +9,11 @@ import { Typography, Flex, Divider, theme, ConfigProvider } from 'antd'
 
 const { Title } = Typography
 
-declare type ErrorProps = {
+type ErrorProps = {
   type: '404' | '500'
   message?: string
 }
 
-/**
- * Error output component
- * @param type {'404'|'500'} - error type
- * @param message {string} - error message
- * @constructor
- */
 export const ErrorComponent: React.FC<ErrorProps> = ({
   type,
   message,

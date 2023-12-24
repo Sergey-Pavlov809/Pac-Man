@@ -1,11 +1,13 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
+import NotFoundPage from '../../pages/404/404'
 
 function RootBoundary(): React.ReactElement {
   const error = useRouteError()
+  console.log('Возникла ошибка')
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 404) {
-      return <div>This page does not exist!</div>
+      return <NotFoundPage />
     }
 
     if (error.status === 401) {
