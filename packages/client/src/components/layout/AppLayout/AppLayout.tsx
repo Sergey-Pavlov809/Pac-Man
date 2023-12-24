@@ -14,7 +14,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 }): JSX.Element => (
   <Layout className={css.root}>
     {disableHeader ? null : <Header />}
-    <Layout.Content>
+    <Layout.Content className={css.content}>
       <Outlet />
     </Layout.Content>
     <Footer />
