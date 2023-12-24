@@ -25,3 +25,9 @@ export const GAME_RULES = [
       'Очки зарабатываются за поедание шариков, и призраков. Игрок стремится достичь максимального счета, прежде чем закончатся все жизни.',
   },
 ]
+
+export const GameStatus = {
+  idle: 'idle',
+  in_progress: 'in_progress',
+  finish: 'finish',
+} as const

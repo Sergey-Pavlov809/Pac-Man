@@ -1,25 +1,26 @@
 import * as React from 'react'
 import { Game } from './Game'
 import { GameStart } from './GameStart'
+import { GameStatus } from './const'
 
-type GameStatusType = 'idle' | 'in_progress' | 'finish'
+type GameStatusType = keyof typeof GameStatus
 
 export const GamePage: React.FC = () => {
-  const [status, setStatus] = React.useState<GameStatusType>('idle')
+  const [status, setStatus] = React.useState<GameStatusType>(GameStatus.idle)
 
   const setInProgressStatus = (): void => {
-    setStatus('in_progress')
+    setStatus(GameStatus.in_progress)
   }
 
-  if (status === 'idle') {
+  if (status === GameStatus.idle) {
     return <GameStart setInProgressStatus={setInProgressStatus} />
   }
 
-  if (status === 'in_progress') {
+  if (status === GameStatus.in_progress) {
     return <Game />
   }
 
-  if (status === 'finish') {
+  if (status === GameStatus.finish) {
     return <p>Игра закончена</p>
   }
 
