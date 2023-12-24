@@ -13,7 +13,7 @@ const loginValidator: Rule[] = [
 
 const passwordValidator: Rule[] = [
   { required: true, message: 'Это обязательное поле' },
-  { min: 8, max: 40, message: 'Длинна от 8 до 40' },
+  { min: 8, max: 40, message: 'Длина от 8 до 40' },
   { pattern: /[0-9]/, message: 'Должна быть хоть одна цифра' },
   { pattern: /[A-ZА-ЯЁ]/, message: 'Должна быть хоть одна буква' },
 ]
