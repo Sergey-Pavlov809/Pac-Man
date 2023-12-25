@@ -13,8 +13,7 @@ export const initialData = {
 }
 
 export const cardStyle = {
-  width: '100%',
-  height: '100%',
+  padding: '24px',
 }
 
 export const fieldStyle = {
