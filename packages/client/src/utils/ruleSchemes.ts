@@ -38,7 +38,7 @@ const phoneValidator: Rule[] = [
 
 const loginValidator: Rule[] = [
   { required: true, message: 'Это обязательное поле' },
-  { min: 3, max: 20, message: 'Длинна от 3 до 20' },
+  { min: 3, max: 20, message: 'Длина от 3 до 20' },
   {
     pattern: /^[a-zA-Z0-9-_]+$/,
     message:
@@ -49,7 +49,7 @@ const loginValidator: Rule[] = [
 
 const passwordValidator: Rule[] = [
   { required: true, message: 'Это обязательное поле' },
-  { min: 8, max: 40, message: 'Длинна от 8 до 40' },
+  { min: 8, max: 40, message: 'Длина от 8 до 40' },
   { pattern: /[0-9]/, message: 'Должна быть хоть одна цифра' },
   { pattern: /[A-ZА-ЯЁ]/, message: 'Должна быть хоть одна буква' },
 ]
@@ -63,4 +63,9 @@ const registerValidationSchema = {
   phone: phoneValidator,
 }
 
-export { registerValidationSchema }
+const loginValidationSchema = {
+  login: loginValidator,
+  password: passwordValidator,
+}
+
+export { registerValidationSchema, loginValidationSchema }
