@@ -24,7 +24,7 @@ export const SignUp: React.FC = () => {
     console.log('Received values of form: ', values)
     try {
       const response = await yApiService.register(values)
-      console.log('Result register', response.data)
+      console.log('Result register', response)
       await checkUserRegistration()
     } catch (error) {
       console.log('Error register', error)
@@ -34,7 +34,7 @@ export const SignUp: React.FC = () => {
   const checkUserRegistration = async (): Promise<void> => {
     try {
       const response = await yApiService.getUser()
-      console.log('Result getUser', response.data)
+      console.log('Result getUser', response)
     } catch (error) {
       console.log('Error getUser', error)
     }
@@ -42,7 +42,7 @@ export const SignUp: React.FC = () => {
 
   return (
     <Flex
-      style={{ minHeight: '100%' }}
+      style={{ minHeight: '100%', margin: '20px 0' }}
       gap="middle"
       align="center"
       justify="center"
