@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Menu, Layout, MenuProps } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { routes } from '../../../routes'
+import { isAuthenticated } from '../../../pages/Profile/utils'
 
 const { Header: AntHeader } = Layout
 
@@ -10,6 +11,14 @@ const items: MenuProps['items'] = [
     label: <Link to={routes.main()}>Главная</Link>,
     key: routes.main(),
   },
+  ...(isAuthenticated
+    ? [
+        {
+          label: <Link to={routes.profile()}>Профиль</Link>,
+          key: routes.profile(),
+        },
+      ]
+    : []),
   {
     label: <Link to={routes.game()}>Играть</Link>,
     key: routes.game(),
