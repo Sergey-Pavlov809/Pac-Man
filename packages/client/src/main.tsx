@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main, Profile, GamePage } from './pages'
+import { Main, Profile, GamePage, SignUp } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import SignIn from './pages/SignIn'
 import { routes } from './routes'
 import { AppLayout, RootBoundary } from './components'
 import 'antd/dist/reset.css'
@@ -16,7 +17,6 @@ const router = createBrowserRouter([
         path: routes.app(),
         element: <App />,
       },
-
       {
         path: routes.profile(),
         element: <Profile />,
@@ -52,11 +52,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: routes.signin(),
-        element: <div>/sign-in</div>,
+        element: <SignIn />,
       },
       {
         path: routes.signup(),
-        element: <div>/sign-up</div>,
+        element: <SignUp />,
       },
     ],
   },
