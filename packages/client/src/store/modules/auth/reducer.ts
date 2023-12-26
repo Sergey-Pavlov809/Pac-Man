@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getUserInfo } from '../../../api/auth'
 import { AUTHORIZATION_STATUS } from '../../../utils/consts'
 import { AuthState } from '../../types'
+import yApiService from '../../../services/y-api-service'
 
 const initialState: AuthState = {
   id: null,
@@ -17,7 +17,7 @@ const initialState: AuthState = {
 }
 
 export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
-  const response = await getUserInfo()
+  const response = await yApiService.getUser()
 
   return response
 })
