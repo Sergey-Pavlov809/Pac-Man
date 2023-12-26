@@ -46,47 +46,46 @@
 
 ###  Карта:
 
-#### Использование Символов в Карте:
+Массив `map` представляет собой игровую карту с различными тайлами. Каждый символ в массиве соответствует определенному элементу в игре. Ниже приведен легендарный ключ, предоставляющий информацию о каждом символе и соответствующем элементе:
 
-Карта представляет собой двумерный массив символов, где каждый символ определяет различные элементы на игровом поле. Эти символы могут представлять разные объекты или области, например:
+- `1`: ![pipeCorner1](../src/assets/mapElements/pipeCorner1.png) Угол трубы 1
+- `2`: ![pipeCorner2](../src/assets/mapElements/pipeCorner2.png) Угол трубы 2
+- `3`: ![pipeCorner3](../src/assets/mapElements/pipeCorner3.png) Угол трубы 3
+- `4`: ![pipeCorner4](../src/assets/mapElements/pipeCorner4.png) Угол трубы 4
+- `b`: ![block](../src/assets/mapElements/block.png) Блок
+- `[`: ![capLeft](../src/assets/mapElements/capLeft.png) Крышка слева
+- `]`: ![capRight](../src/assets/mapElements/capRight.png) Крышка справа
+- `_`: ![capBottom](../src/assets/mapElements/capBottom.png) Крышка снизу
+- `^`: ![capTop](../src/assets/mapElements/capTop.png) Крышка сверху
+- `+`: ![pipeCross](../src/assets/mapElements/pipeCross.png) Перекрестие трубы
+- `5`: ![pipeConnectorTop](../src/assets/mapElements/pipeConnectorTop.png) Коннектор трубы сверху
+- `6`: ![pipeConnectorRight](../src/assets/mapElements/pipeConnectorRight.png) Коннектор трубы справа
+- `7`: ![pipeConnectorBottom](../src/assets/mapElements/pipeConnectorBottom.png) Коннектор трубы снизу
+- `8`: ![pipeConnectorLeft](../src/assets/mapElements/pipeConnectorLeft.png) Коннектор трубы слева
 
-* `'-'` (дефис): Границы поля. Используется для обозначения стен, которые нельзя пересекать.
-* `' '` (пробел): Свободное пространство. Используется для обозначения открытых областей, где игровые объекты могут свободно перемещаться.
-
-```javascript
-const map = [
-  ['-', '-', '-', '-', '-', '-', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', ' ', '-', ' ', '-', ' ', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', ' ', '-', ' ', '-', ' ', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', '-', '-', '-', '-', '-', '-'],
-] 
-```
 
 #### Инициализация Границ из Карты:
 
-При инициализации игры, класс Boundary создается для каждого символа '-' на карте. Происходит пробег по каждому символу на карте, и если символ соответствует границе, создается экземпляр класса Boundary с учетом позиции символа на карте и добавляется в массив `boundaries`.
+При инициализации игры, класс Boundary создается для каждого символа (описанного выше )на карте. Происходит пробег по каждому символу на карте, и если символ соответствует границе, создается экземпляр класса Boundary с учетом позиции символа на карте и добавляется в массив `boundaries`.
 
 ```javascript
     map.forEach((row, indexRow) => {
       row.forEach((symbol, indexSymbol) => {
-        switch (symbol) {
-          case '-':
-            boundaries.push(
-              new Boundary({
-                position: {
-                  x: Boundary.width * indexSymbol,
-                  y: Boundary.height * indexRow,
-                },
-                ctx,
-              })
-            )
-            break
+        const block = mapElements[symbol]
+        if (block) {
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * indexSymbol,
+                y: Boundary.height * indexRow,
+              },
+              ctx,
+              image: createImg(block),
+            })
+          )
         }
       })
-    })
+    })–
  ```
 
 далее в функции `animate()` пробегаемся по массиву `boundaries` и вызываем у кождого блока метод `drow()`, который oтрисовывает границу на холсте.

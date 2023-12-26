@@ -4,18 +4,10 @@ import { Boundary } from './Boundary'
 import { Player } from './Player'
 import { Vector } from './types'
 
-const map: string[][] = [
-  ['-', '-', '-', '-', '-', '-', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', ' ', '-', ' ', '-', ' ', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', ' ', '-', ' ', '-', ' ', '-'],
-  ['-', ' ', ' ', ' ', ' ', ' ', '-'],
-  ['-', '-', '-', '-', '-', '-', '-'],
-]
+import { map, mapElements } from './mapsUtils'
 
-const gameWidth = 280
-const gameHeight = 280
+const gameWidth = 440
+const gameHeight = 520
 
 export const useGameinitialization = (
   ref: React.RefObject<HTMLCanvasElement>
@@ -152,7 +144,6 @@ export const useGameinitialization = (
         ) {
           player.velocity.x = 0
           break
-          w
         } else {
           player.velocity.x = 5
         }
@@ -171,6 +162,11 @@ export const useGameinitialization = (
 
     player.update()
   }
+  const createImg = (src: string): CanvasImageSource => {
+    const image = new Image()
+    image.src = src
+    return image
+  }
 
   useEffect(() => {
     const canvas = ref?.current
@@ -184,18 +180,18 @@ export const useGameinitialization = (
 
     map.forEach((row, indexRow) => {
       row.forEach((symbol, indexSymbol) => {
-        switch (symbol) {
-          case '-':
-            boundaries.push(
-              new Boundary({
-                position: {
-                  x: Boundary.width * indexSymbol,
-                  y: Boundary.height * indexRow,
-                },
-                ctx,
-              })
-            )
-            break
+        const block = mapElements[symbol]
+        if (block) {
+          boundaries.push(
+            new Boundary({
+              position: {
+                x: Boundary.width * indexSymbol,
+                y: Boundary.height * indexRow,
+              },
+              ctx,
+              image: createImg(block),
+            })
+          )
         }
       })
     })
@@ -213,6 +209,7 @@ export const useGameinitialization = (
     })
 
     animate(ctx, player)
+
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
     return () => {
