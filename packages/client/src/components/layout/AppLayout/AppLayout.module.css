@@ -1,0 +1,7 @@
+.root {
+  height: 100%;
+}
+
+.content {
+  overflow-y: scroll;
+}
