@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main, Profile, GamePage } from './pages'
+import { Main, Profile, GamePage, SignUp } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './pages/SignIn'
 import { routes } from './routes'
@@ -17,7 +17,6 @@ const router = createBrowserRouter([
         path: routes.app(),
         element: <App />,
       },
-
       {
         path: routes.profile(),
         element: <Profile />,
@@ -57,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: routes.signup(),
-        element: <div>/sign-up</div>,
+        element: <SignUp />,
       },
     ],
   },
