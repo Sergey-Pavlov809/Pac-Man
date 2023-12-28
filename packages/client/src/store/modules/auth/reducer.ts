@@ -16,7 +16,7 @@ const initialState: AuthState = {
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
 }
 
-export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
+export const fetchUserData = createAsyncThunk('auth/fetchUserData', async () => {
   const response = await yApiService.getUser()
 
   return response
