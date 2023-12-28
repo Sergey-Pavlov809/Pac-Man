@@ -57,6 +57,6 @@ export const authSlice = createSlice({
 
 const authReducer = authSlice.reducer
 
-export const selectAuth = (state: AuthState): AuthState => state
+export const selectAuth = (state: RootState): AuthState => state.authReducer
 
 export default authReducer
