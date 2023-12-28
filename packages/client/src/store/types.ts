@@ -14,3 +14,5 @@ export interface AuthState {
   avatar: string | null
   authorizedStatus: string
 }
+
+export type RootState = ReturnType<typeof store.getState>

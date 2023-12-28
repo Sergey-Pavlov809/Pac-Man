@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AUTHORIZATION_STATUS } from '../../../utils/consts'
-import { AuthState } from '../../types'
+import { AuthState, RootState } from '../../types'
 import yApiService from '../../../services/y-api-service'
+import { message } from 'antd'
 
 const initialState: AuthState = {
   id: null,
@@ -16,11 +17,18 @@ const initialState: AuthState = {
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
 }
 
-export const fetchUserData = createAsyncThunk('auth/fetchUserData', async () => {
-  const response = await yApiService.getUser()
+export const fetchUserData = createAsyncThunk(
+  'auth/fetchUserData',
+  async () => {
+    try {
+      const response = await yApiService.getUser()
 
-  return response
-})
+      return response
+    } catch (error) {
+      message.error(`Ошибка загрузки файла: ${error}`)
+    }
+  }
+)
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -28,7 +36,7 @@ export const authSlice = createSlice({
   reducers: {},
   extraReducers: ({ addCase }) => {
     addCase(fetchUserData.pending, state => {
-      state.authorizedStatus = AUTHORIZATION_STATUS.UNKNOWN
+      state.authorizedStatus = AUTHORIZATION_STATUS.LOADING
     })
     addCase(fetchUserData.fulfilled, (state, { payload }) => {
       state.id = payload.id
@@ -48,5 +56,7 @@ export const authSlice = createSlice({
 })
 
 const authReducer = authSlice.reducer
+
+export const selectAuth = (state: AuthState): AuthState => state
 
 export default authReducer

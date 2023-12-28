@@ -37,12 +37,7 @@ const SignIn: React.FC = () => {
   }
 
   const checkUserAuth = async (): Promise<void> => {
-    try {
-      const response = await yApiService.getUser()
-      console.log('Result getUser', response)
-    } catch (error) {
-      console.log('Error getUser', error)
-    }
+    await yApiService.getUser()
   }
 
   const navigateToSiguUp = (): void => {
