@@ -25,7 +25,7 @@ export const fetchUserData = createAsyncThunk(
 
       return response
     } catch (error) {
-      message.error(`Ошибка получения данных пользователя: ${error}`)
+      message.error(`Ошибка загрузки данных о пользователе: ${error}`)
     }
   }
 )
