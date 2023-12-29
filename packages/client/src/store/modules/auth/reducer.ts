@@ -24,7 +24,7 @@ export const fetchUserData = createAsyncThunk(
       const response = await yApiService.getUser()
       return response
     } catch (error) {
-      message.error(`Ошибка загрузки файла: ${error}`)
+      message.error(`Ошибка загрузки информации о пользователе: ${error}`)
       return rejectWithValue(error.response.data)
     }
   }
