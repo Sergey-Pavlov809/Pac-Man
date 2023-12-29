@@ -19,13 +19,14 @@ const initialState: AuthState = {
 
 export const fetchUserData = createAsyncThunk(
   'auth/fetchUserData',
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await yApiService.getUser()
 
       return response
     } catch (error) {
       message.error(`Ошибка загрузки файла: ${error}`)
+      return rejectWithValue(err.response.data)
     }
   }
 )
