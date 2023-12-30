@@ -8,6 +8,8 @@ import { routes } from './routes'
 import { AppLayout, RootBoundary } from './components'
 import 'antd/dist/reset.css'
 import './index.css'
+import { store } from './store'
+import { Provider } from 'react-redux'
 
 const router = createBrowserRouter([
   {
@@ -64,6 +66,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} fallbackElement={<RootBoundary />} />
+    <Provider store={store}>
+      <RouterProvider router={router} fallbackElement={<RootBoundary />} />
+    </Provider>
   </React.StrictMode>
 )

@@ -11,6 +11,8 @@
     "test": "jest ./"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
+    "@types/redux-mock-store": "^1.0.6",
     "antd": "^5.12.2",
     "classnames": "^2.3.2",
     "dotenv": "^16.0.2",
@@ -19,8 +21,10 @@
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.0.4",
     "react-router": "^6.20.1",
-    "react-router-dom": "^6.20.1"
+    "react-router-dom": "^6.20.1",
+    "redux-mock-store": "^1.5.4"
   },
   "devDependencies": {
     "@testing-library/react": "^13.3.0",
