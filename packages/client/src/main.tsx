@@ -8,6 +8,7 @@ import { routes } from './routes'
 import { AppLayout, RootBoundary } from './components'
 import 'antd/dist/reset.css'
 import './index.css'
+import NotFoundPage from './pages/404/404'
 import { store } from './store'
 import { Provider } from 'react-redux'
 
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: '*',
-        element: <div>*</div>,
+        element: <NotFoundPage />,
       },
     ],
   },
