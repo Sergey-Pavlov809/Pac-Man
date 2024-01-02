@@ -2,7 +2,7 @@ import { Button, Form, Input, Flex, Card } from 'antd'
 import { registerValidationSchema } from '../../utils/ruleSchemes'
 import { RuleObject } from 'rc-field-form/lib/interface'
 import yApiService from '../../services/y-api-service'
-import { RegistrationFromApi } from '../../types/FromApi'
+import { RegistrationFromApi } from '../../types/FormApi'
 
 const tailFormItemLayout = {
   wrapperCol: {

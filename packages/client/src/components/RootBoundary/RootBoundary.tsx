@@ -1,4 +1,5 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
+import ServerErrorPage from '../../pages/500/500'
 import NotFoundPage from '../../pages/404/404'
 
 function RootBoundary(): React.ReactElement {
@@ -22,7 +23,7 @@ function RootBoundary(): React.ReactElement {
     }
   }
 
-  return <div>Something went wrong</div>
+  return <ServerErrorPage />
 }
 
 export default RootBoundary

@@ -13,3 +13,12 @@ export type UserFromApi = {
   avatar: string
   email: string
 }
+
+export interface RegistrationFromApi {
+  first_name: string
+  second_name: string
+  login: string
+  email: string
+  password: string
+  phone: string
+}

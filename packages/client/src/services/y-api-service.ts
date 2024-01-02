@@ -1,9 +1,14 @@
+import {
+  RegistrationFromApi,
+  UserFromApi,
+  LoginFromApi,
+} from '../types/FormApi'
 import { RegistrationFromApi, UserFromApi } from '../types/FromApi'
 
 export const Y_API_BASE_URL = 'https://ya-praktikum.tech/api/v2'
 
 const yApiService = {
-  login(userData: RegistrationFromApi): Promise<Response> {
+  login(userData: LoginFromApi): Promise<Response> {
     return fetch(`${Y_API_BASE_URL}/auth/signin`, {
       method: 'POST',
       headers: {

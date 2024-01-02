@@ -3,6 +3,8 @@ import yApiService from '../../services/y-api-service'
 import { LoginFromApi } from '../../types/FormApi'
 import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '../../hooks/useAppDispatch'
+import { fetchUserData } from '../../store/modules/auth/reducer'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -20,11 +22,13 @@ const tailFormItemLayout = {
 const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
 
   const onFinish = async (values: LoginFromApi): Promise<void> => {
     console.log('Received values of form: ', values)
     try {
       const response = await yApiService.login(values)
+      dispatch(fetchUserData())
       console.log('Result login', response)
       await checkUserAuth()
     } catch (error) {
@@ -33,12 +37,7 @@ const SignIn: React.FC = () => {
   }
 
   const checkUserAuth = async (): Promise<void> => {
-    try {
-      const response = await yApiService.getUser()
-      console.log('Result getUser', response)
-    } catch (error) {
-      console.log('Error getUser', error)
-    }
+    await yApiService.getUser()
   }
 
   const navigateToSiguUp = (): void => {
