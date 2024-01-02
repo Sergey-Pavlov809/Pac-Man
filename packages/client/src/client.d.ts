@@ -4,3 +4,4 @@ declare const contributors: Array<{
   email: string
   url?: string
 }>
+declare const __BASE_URL__: string

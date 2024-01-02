@@ -3,6 +3,7 @@ import {
   UserFromApi,
   LoginFromApi,
 } from '../types/FormApi'
+import { RegistrationFromApi, UserFromApi } from '../types/FromApi'
 
 export const Y_API_BASE_URL = 'https://ya-praktikum.tech/api/v2'
 
