@@ -1,10 +1,8 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
-import yApiService from '../../services/y-api-service'
-import { LoginFromApi } from '../../types/FormApi'
 import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { fetchUserData } from '../../store/modules/auth/reducer'
+
+import useSignIn from './hooks/useSignIn'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -22,23 +20,8 @@ const tailFormItemLayout = {
 const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
 
-  const onFinish = async (values: LoginFromApi): Promise<void> => {
-    console.log('Received values of form: ', values)
-    try {
-      const response = await yApiService.login(values)
-      dispatch(fetchUserData())
-      console.log('Result login', response)
-      await checkUserAuth()
-    } catch (error) {
-      console.log('Error login', error)
-    }
-  }
-
-  const checkUserAuth = async (): Promise<void> => {
-    await yApiService.getUser()
-  }
+  const { login } = useSignIn()
 
   const navigateToSiguUp = (): void => {
     navigate('/sign-up')
@@ -56,7 +39,7 @@ const SignIn: React.FC = () => {
         size="small"
         headStyle={{ textAlign: 'center' }}
         style={{ width: 410 }}>
-        <Form form={form} name="login" onFinish={onFinish} layout="vertical">
+        <Form form={form} name="login" onFinish={login} layout="vertical">
           <Form.Item
             name="login"
             label="Логин"
