@@ -25,7 +25,7 @@ export const fetchUserData = createAsyncThunk(
       return response
     } catch (error) {
       message.error(`Ошибка загрузки информации о пользователе: ${error}`)
-      return rejectWithValue(error.response.data)
+      return rejectWithValue(error)
     }
   }
 )
@@ -57,6 +57,6 @@ export const authSlice = createSlice({
 
 const authReducer = authSlice.reducer
 
-export const selectAuth = (state: RootState): AuthState => state.authReducer
+export const selectAuth = (state: RootState): AuthState => state.auth
 
 export default authReducer
