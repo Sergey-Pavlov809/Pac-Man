@@ -45,11 +45,7 @@ function logStatus<T>(msg: string, obj: T | null = null): void {
 /** Проверяем нужно ли кешировать запрос. */
 function shouldUseCache(req: Request): boolean {
   // Чтобы не проходили запросы типа chrome-extension://
-  if (!req.url.match(/^http/)) {
-    return false
-  } else {
-    return true
-  }
+  return !!req.url.match(/^http/)
 }
 
 // При установке воркера кешируем часть данных (статику)
