@@ -29,6 +29,7 @@ const FALLBACK_BODY = `
   <h2>Обновите страницу или вернись на главную</h2>
 `
 const FALLBACK_HEADERS = {
+  status: 408,
   headers: { 'Content-Type': 'text/html; charset=utf-8' },
 }
 // Таймауты запросов в зависимости от наличия кеша
