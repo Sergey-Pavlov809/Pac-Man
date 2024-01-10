@@ -33,7 +33,7 @@ const FALLBACK_HEADERS = {
 }
 // Таймауты запросов в зависимости от наличия кеша
 const FETCH_CACHED_TIMEOUT = 5000
-const FETCH_NETWORK_TIMEOUT = 15000
+const FETCH_NETWORK_TIMEOUT = FETCH_CACHED_TIMEOUT * 3
 
 /** Для логирования. */
 function logStatus<T>(msg: string, obj: T | null = null): void {
