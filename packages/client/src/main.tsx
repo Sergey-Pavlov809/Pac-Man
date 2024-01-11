@@ -11,6 +11,20 @@ import './index.css'
 import NotFoundPage from './pages/404/404'
 import { store } from './store'
 import { Provider } from 'react-redux'
+import {
+  registerServiceWorker,
+  unregisterServiceWorker,
+} from './utils/serviceWorkerUtils'
+
+/**
+ * Активировать SW будем в production режиме, но для временно для тестов добавляю DEV
+ */
+if (import.meta.env.PROD || import.meta.env.DEV) {
+  // TODO: при переходе на прод, убрать DEV
+  registerServiceWorker(true)
+} else {
+  unregisterServiceWorker(true)
+}
 
 const router = createBrowserRouter([
   {
