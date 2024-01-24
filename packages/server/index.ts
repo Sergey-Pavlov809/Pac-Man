@@ -34,12 +34,10 @@ async function startServer() {
     app.use(vite.middlewares)
   }
 
-  // Раздаем всю статику нашего приложения
   app.use(express.static(path.join(pathToShared, 'dist'), { index: false }))
 
   app.use('/', async (req: Request, res: Response) => {
     const url = req.originalUrl
-    // Берем index bз продакшн билда
     let template: string
 
     if (isDev()) {
@@ -64,16 +62,13 @@ async function startServer() {
         )
       ).render
     } else {
-      // Получаем путь до сбилдженого модуля клиента, чтобы не тащить средства сборки клиента на сервер
       const pathToServer = require.resolve(
         path.join(pathToShared, '/ssr-build/entry-server.cjs')
       )
-      // Импортируем этот модуль и вызываем с инишл стейтом
       render = (await import(pathToServer)).render
     }
 
     const appHtml = await render()
-    // Добавляем в шаблон разметку и наш скрип с стейтом
     const html = template.replace('<!--app-html-->', appHtml)
 
     res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
