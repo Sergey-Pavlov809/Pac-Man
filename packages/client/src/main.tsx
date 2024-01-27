@@ -1,7 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import { Main, Profile, GamePage, SignUp, LeaderBoard } from './pages'
+import {
+  Main,
+  Profile,
+  GamePage,
+  SignUp,
+  LeaderBoard,
+  Forum,
+  Topic,
+} from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './pages/SignIn'
 import { routes } from './routes'
@@ -52,11 +60,11 @@ const router = createBrowserRouter([
       },
       {
         path: routes.forum(),
-        element: <div>/chat</div>,
+        element: <Forum />,
       },
       {
         path: routes.topic(),
-        element: <div>/topic</div>,
+        element: <Topic />,
       },
       {
         path: '*',

@@ -1,0 +1,15 @@
+.topic {
+  padding: 10px 10px 0;
+  min-height: 100%;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.topicContent {
+  margin: 10px auto 15px;
+}
+
+.form {
+  margin-top: auto;
+}
