@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import yApiService from '../../../services/y-api-service'
-import { LoginFromApi } from '../../../types/FormApi'
-import { useAppDispatch } from '../../../hooks/useAppDispatch'
-import { fetchUserData } from '../../../store/modules/auth/reducer'
+import yApiService from 'services/y-api-service'
+import { LoginFromApi } from 'types/FormApi'
+import { useAppDispatch } from 'hooks/useAppDispatch'
+import { fetchUserData } from 'store/modules/auth/reducer'
 
 interface useSignIn {
   isLogin: boolean

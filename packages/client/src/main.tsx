@@ -1,28 +1,16 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
-import {
-  Main,
-  Profile,
-  GamePage,
-  SignUp,
-  LeaderBoard,
-  Forum,
-  Topic,
-} from './pages'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import SignIn from './pages/SignIn'
-import { routes } from './routes'
-import { AppLayout, RootBoundary } from './components'
+import { AppRouter } from 'config/router'
 import 'antd/dist/reset.css'
 import './index.css'
-import NotFoundPage from './pages/404/404'
-import { store } from './store'
+import { setupStore } from './store'
 import { Provider } from 'react-redux'
 import {
   registerServiceWorker,
   unregisterServiceWorker,
-} from './utils/serviceWorkerUtils'
+} from 'utils/serviceWorkerUtils'
+import { BrowserRouter } from 'react-router-dom'
+import { ErrorComponent } from 'components/error/ErrorComponent'
+import { ErrorBoundary } from 'react-error-boundary'
 
 /**
  * Активировать SW будем в production режиме, но для временно для тестов добавляю DEV
@@ -34,63 +22,21 @@ if (import.meta.env.PROD || import.meta.env.DEV) {
   unregisterServiceWorker(true)
 }
 
-const router = createBrowserRouter([
-  {
-    element: <AppLayout />,
-    children: [
-      {
-        path: routes.app(),
-        element: <App />,
-      },
-      {
-        path: routes.profile(),
-        element: <Profile />,
-      },
-      {
-        path: routes.main(),
-        element: <Main />,
-      },
-      {
-        path: routes.game(),
-        element: <GamePage />,
-      },
-      {
-        path: routes.leaderboard(),
-        element: <LeaderBoard />,
-      },
-      {
-        path: routes.forum(),
-        element: <Forum />,
-      },
-      {
-        path: routes.topic(),
-        element: <Topic />,
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
-      },
-    ],
-  },
-  {
-    element: <AppLayout disableHeader />,
-    children: [
-      {
-        path: routes.signin(),
-        element: <SignIn />,
-      },
-      {
-        path: routes.signup(),
-        element: <SignUp />,
-      },
-    ],
-  },
-])
+const store = setupStore()
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} fallbackElement={<RootBoundary />} />
-    </Provider>
-  </React.StrictMode>
+const rootElement = document.getElementById('root') as HTMLElement
+const app = (
+  <Provider store={store}>
+    <BrowserRouter>
+      <ErrorBoundary fallback={<ErrorComponent type="500" />}>
+        <AppRouter />
+      </ErrorBoundary>
+    </BrowserRouter>
+  </Provider>
 )
+
+if (rootElement.innerHTML === '<!--ssr-outlet-->') {
+  ReactDOM.createRoot(rootElement).render(app)
+} else {
+  ReactDOM.hydrateRoot(rootElement, app)
+}

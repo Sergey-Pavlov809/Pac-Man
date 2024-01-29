@@ -1,5 +1,5 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
-import { loginValidationSchema } from '../../utils/ruleSchemes'
+import { loginValidationSchema } from 'utils/ruleSchemes'
 import { useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
@@ -17,7 +17,7 @@ const tailFormItemLayout = {
   },
 }
 
-const SignIn: React.FC = () => {
+export const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
@@ -73,5 +73,3 @@ const SignIn: React.FC = () => {
     </Flex>
   )
 }
-
-export default SignIn

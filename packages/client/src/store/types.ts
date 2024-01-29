@@ -1,6 +1,6 @@
-import { store } from './index'
+import { rootReducer, setupStore } from './index'
 
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = ReturnType<typeof setupStore>['dispatch']
 
 export interface AuthState {
   id: number | null
@@ -15,4 +15,4 @@ export interface AuthState {
   authorizedStatus: string
 }
 
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof rootReducer>

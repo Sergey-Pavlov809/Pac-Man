@@ -1,6 +1,6 @@
 import { Button, Form, Input, Modal } from 'antd'
 import { FC } from 'react'
-import { ITopic } from '../../services'
+import { ITopic } from 'services/index'
 
 interface AddTopicModalProps {
   isOpen: boolean

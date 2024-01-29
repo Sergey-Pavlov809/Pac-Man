@@ -1,7 +1,7 @@
 import React from 'react'
-import { ErrorComponent } from '../../components/error/ErrorComponent'
+import { ErrorComponent } from 'components/error/ErrorComponent'
 
-const ServerErrorPage: React.FC = () => {
+export const ServerErrorPage: React.FC = () => {
   return (
     <ErrorComponent
       type={'500'}
@@ -9,5 +9,3 @@ const ServerErrorPage: React.FC = () => {
     />
   )
 }
-
-export default ServerErrorPage

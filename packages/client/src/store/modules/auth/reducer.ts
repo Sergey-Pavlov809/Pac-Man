@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { AUTHORIZATION_STATUS } from '../../../utils/consts'
+import { AUTHORIZATION_STATUS } from 'utils/consts'
 import { AuthState, RootState } from '../../types'
-import yApiService from '../../../services/y-api-service'
+import yApiService from 'services/y-api-service'
 import { message } from 'antd'
 
 const initialState: AuthState = {

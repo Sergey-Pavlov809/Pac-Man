@@ -1,4 +1,4 @@
-import { serviceWorkerDEV } from './utils/serviceWorkerUtils'
+import { serviceWorkerDEV } from 'utils/serviceWorkerUtils'
 
 const serviceWorker = self as unknown as ServiceWorkerGlobalScope // чтобы не ругался тайпскрипт
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button, Typography, Card } from 'antd'
-import { useBrowserNotification } from '../../hooks'
+import { useBrowserNotification } from 'hooks/useBrowserNotification'
 
 import css from './Game.module.css'
 
