@@ -3,6 +3,7 @@ import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
+import Link from 'antd/es/typography/Link'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -21,7 +22,7 @@ const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
-  const { login } = useSignIn()
+  const { login, yandexOAuthUrl } = useSignIn()
 
   const navigateToSiguUp = (): void => {
     navigate('/sign-up')
@@ -60,6 +61,7 @@ const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
+            <Link href={yandexOAuthUrl}>{'Войти через Яндекс'}</Link>
             <Button
               type="link"
               htmlType="submit"

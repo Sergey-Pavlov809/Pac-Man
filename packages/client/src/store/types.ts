@@ -3,7 +3,7 @@ import { store } from './index'
 export type AppDispatch = typeof store.dispatch
 
 export interface AuthState {
-  id: number | null
+  id: string | null
   first_name: string | null
   second_name: string | null
   display_name: string | null
@@ -13,6 +13,7 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+  yandexOAuthId: string
 }
 
 export type RootState = ReturnType<typeof store.getState>
