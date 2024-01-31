@@ -1,0 +1,12 @@
+export type TerrainVariant =
+  | 'WHOLE'
+  | 'TOP'
+  | 'BOTTOM'
+  | 'LEFT'
+  | 'RIGHT'
+  | 'LEFT_TOP'
+  | 'RIGHT_TOP'
+  | 'LEFT_BOTTOM'
+  | 'RIGHT_BOTTOM'
+  | 'HORIZONTAL'
+  | 'VERTICAL'

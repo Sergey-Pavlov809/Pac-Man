@@ -1,17 +1,31 @@
 import * as React from 'react'
 
-import { useGameinitialization } from './useGameinitialization'
-
-import css from './Game.module.css'
+import { useEffect, useRef } from 'react'
+import { Flex } from 'antd'
+import { Pacman } from '../../game'
 
 export const Game: React.FC = () => {
-  const ref = React.useRef<HTMLCanvasElement>(null)
+  const gameRoot = useRef(null)
 
-  useGameinitialization(ref)
+  const game = Pacman.create()
+
+  useEffect(() => {
+    game.init(gameRoot.current)
+
+    return () => {
+      game.unload()
+    }
+  }, [])
 
   return (
-    <div className={css.root}>
-      <canvas ref={ref} />
-    </div>
+    <Flex
+      style={{ minHeight: '100%' }}
+      vertical
+      justify="center"
+      align="center"
+      gap="middle"
+      wrap="wrap">
+      <div ref={gameRoot}></div>
+    </Flex>
   )
 }
