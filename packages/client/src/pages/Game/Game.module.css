@@ -9,7 +9,12 @@
 .gameRules {
   margin-top: 24px;
 }
+
 .root {
   background: black;
   text-align: center;
+}
+
+.score {
+  color: white;
 }
