@@ -5,13 +5,17 @@ import { useGameinitialization } from './useGameinitialization'
 import css from './Game.module.css'
 
 export const Game: React.FC = () => {
-  const ref = React.useRef<HTMLCanvasElement>(null)
+  const convasRef = React.useRef<HTMLCanvasElement>(null)
+  const scoreRef = React.useRef<HTMLCanvasElement>(null)
 
-  useGameinitialization(ref)
+  useGameinitialization(convasRef, scoreRef)
 
   return (
     <div className={css.root}>
-      <canvas ref={ref} />
+      <div className={css.score}>
+        score: <span ref={scoreRef}>0</span>{' '}
+      </div>
+      <canvas ref={convasRef} />
     </div>
   )
 }
