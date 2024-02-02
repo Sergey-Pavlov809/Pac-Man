@@ -1,3 +1,5 @@
+import { GAME_CONFIG } from './const'
+
 type GhostProps = {
   ctx: CanvasRenderingContext2D
   position: { x: number; y: number }
@@ -6,10 +8,10 @@ type GhostProps = {
 }
 
 export class Ghost {
-  static speed = 5
+  static speed = GAME_CONFIG.baseSpeed
   position
   velocity
-  speed = 5
+  speed = GAME_CONFIG.baseSpeed
   radius = 15
   color
   prevCollisions: string[]

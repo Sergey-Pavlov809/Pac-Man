@@ -31,3 +31,12 @@ export const GameStatus = {
   in_progress: 'in_progress',
   finish: 'finish',
 } as const
+
+export const GAME_CONFIG = {
+  heartImg: '❤️',
+  baseSpeed: 5,
+  gameWidth: 440,
+  gameHeight: 520,
+  totalLife: 3,
+  totalScore: 0,
+}
