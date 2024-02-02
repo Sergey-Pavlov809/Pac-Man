@@ -19,3 +19,7 @@
 .container {
   padding: 24px;
 }
+
+:global(.ant-progress-text) {
+  color: white !important;
+}

@@ -39,4 +39,7 @@ export const GAME_CONFIG = {
   gameHeight: 520,
   totalLife: 3,
   totalScore: 0,
+  countdown_max_percent: 75,
+  countdown_seconds_start: 3,
+  countdown_seconds_end: 0,
 }

@@ -1,24 +1,29 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useAppDispatch } from '../../hooks'
+import { setScore } from '../../store/modules/game/reducer'
+
 import { Boundary } from './Boundary'
 import { Player } from './Player'
 import { Vector } from './types'
-
 import { map, mapElements } from './mapsUtils'
 import { Pellet } from './Pellet'
 import { Ghost } from './Ghost'
 import { PowerUp } from './Power'
 import { GAME_CONFIG } from './const'
 
-export const useGameinitialization = ({
-  canvasRef,
-  scoreRef,
-  lifeRef,
-}: {
-  canvasRef: React.RefObject<HTMLCanvasElement>
-  scoreRef: React.RefObject<HTMLSpanElement>
-  lifeRef: React.RefObject<HTMLSpanElement>
-}): (() => void) => {
+export const useGameinitialization = (
+  {
+    canvasRef,
+    scoreRef,
+    lifeRef,
+  }: {
+    canvasRef: React.RefObject<HTMLCanvasElement>
+    scoreRef: React.RefObject<HTMLSpanElement>
+    lifeRef: React.RefObject<HTMLSpanElement>
+  },
+  setFinishStatus: () => void
+): (() => void) => {
+  const dispatch = useAppDispatch()
   const boundaries: Boundary[] = []
   const pellets: Pellet[] = []
   let totalScore = GAME_CONFIG.totalScore
@@ -93,6 +98,12 @@ export const useGameinitialization = ({
         rectangle.position.x + rectangle.width + padding
     )
   }
+  const exitGame = (): void => {
+    window.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('keyup', handleKeyUp)
+    dispatch(setScore(totalScore))
+    setTimeout(() => setFinishStatus(), 500)
+  }
 
   const endGame = (): void => {
     cancelAnimationFrame(animationId)
@@ -106,6 +117,7 @@ export const useGameinitialization = ({
     } else {
       totalLife--
       endGame()
+      exitGame()
     }
 
     if (lifeRef.current) {
@@ -347,16 +359,6 @@ export const useGameinitialization = ({
     return image
   }
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-    return () => {
-      endGame()
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [])
-
   const startGame = (): void => {
     const canvas = canvasRef?.current
     const ctx = canvas?.getContext('2d') as CanvasRenderingContext2D
@@ -441,7 +443,8 @@ export const useGameinitialization = ({
         color: 'pink',
       }),
     ]
-
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
     animate(ctx, player, ghosts)
   }
 
