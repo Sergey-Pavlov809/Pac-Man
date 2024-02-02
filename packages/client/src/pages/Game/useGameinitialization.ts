@@ -8,17 +8,21 @@ import { map, mapElements } from './mapsUtils'
 import { Pellet } from './Pellet'
 import { Ghost } from './Ghost'
 import { PowerUp } from './Power'
+import { GAME_CONFIG } from './const'
 
-const gameWidth = 440
-const gameHeight = 520
-
-export const useGameinitialization = (
-  canvasRef: React.RefObject<HTMLCanvasElement>,
-  scoreRef: React.RefObject<HTMLCanvasElement>
-): void => {
+export const useGameinitialization = ({
+  canvasRef,
+  scoreRef,
+  lifeRef,
+}: {
+  canvasRef: React.RefObject<HTMLCanvasElement>
+  scoreRef: React.RefObject<HTMLSpanElement>
+  lifeRef: React.RefObject<HTMLSpanElement>
+}): (() => void) => {
   const boundaries: Boundary[] = []
   const pellets: Pellet[] = []
-  let totalScore = 0
+  let totalScore = GAME_CONFIG.totalScore
+  let totalLife = GAME_CONFIG.totalLife
   const powerUps: PowerUp[] = []
 
   let animationId: number
@@ -90,13 +94,32 @@ export const useGameinitialization = (
     )
   }
 
+  const endGame = (): void => {
+    cancelAnimationFrame(animationId)
+  }
+
+  const updateLife = (): void => {
+    if (totalLife > 1) {
+      totalLife--
+      endGame()
+      startGame()
+    } else {
+      totalLife--
+      endGame()
+    }
+
+    if (lifeRef.current) {
+      lifeRef.current.textContent = GAME_CONFIG.heartImg.repeat(totalLife)
+    }
+  }
+
   function animate(
     ctx: CanvasRenderingContext2D,
     player: Player,
     ghosts: Ghost[]
   ): void {
     animationId = requestAnimationFrame(() => animate(ctx, player, ghosts))
-    ctx.clearRect(0, 0, gameWidth, gameHeight)
+    ctx.clearRect(0, 0, GAME_CONFIG.gameHeight, GAME_CONFIG.gameHeight)
 
     const { w, a, s, d } = keys
 
@@ -105,14 +128,17 @@ export const useGameinitialization = (
         const boundary = boundaries[i]
         if (
           circleCollidesWithRectangle({
-            circle: { ...player, velocity: { x: 0, y: -5 } },
+            circle: {
+              ...player,
+              velocity: { x: 0, y: -GAME_CONFIG.baseSpeed },
+            },
             rectangle: boundary,
           })
         ) {
           player.velocity.y = 0
           break
         } else {
-          player.velocity.y = -5
+          player.velocity.y = -GAME_CONFIG.baseSpeed
         }
       }
     } else if (a.pressed && lastKey === 'a') {
@@ -120,14 +146,17 @@ export const useGameinitialization = (
         const boundary = boundaries[i]
         if (
           circleCollidesWithRectangle({
-            circle: { ...player, velocity: { x: -5, y: 0 } },
+            circle: {
+              ...player,
+              velocity: { x: -GAME_CONFIG.baseSpeed, y: 0 },
+            },
             rectangle: boundary,
           })
         ) {
           player.velocity.x = 0
           break
         } else {
-          player.velocity.x = -5
+          player.velocity.x = -GAME_CONFIG.baseSpeed
         }
       }
     } else if (s.pressed && lastKey === 's') {
@@ -135,14 +164,14 @@ export const useGameinitialization = (
         const boundary = boundaries[i]
         if (
           circleCollidesWithRectangle({
-            circle: { ...player, velocity: { x: 0, y: 5 } },
+            circle: { ...player, velocity: { x: 0, y: GAME_CONFIG.baseSpeed } },
             rectangle: boundary,
           })
         ) {
           player.velocity.y = 0
           break
         } else {
-          player.velocity.y = 5
+          player.velocity.y = GAME_CONFIG.baseSpeed
         }
       }
     } else if (d.pressed && lastKey === 'd') {
@@ -150,14 +179,14 @@ export const useGameinitialization = (
         const boundary = boundaries[i]
         if (
           circleCollidesWithRectangle({
-            circle: { ...player, velocity: { x: 5, y: 0 } },
+            circle: { ...player, velocity: { x: GAME_CONFIG.baseSpeed, y: 0 } },
             rectangle: boundary,
           })
         ) {
           player.velocity.x = 0
           break
         } else {
-          player.velocity.x = 5
+          player.velocity.x = GAME_CONFIG.baseSpeed
         }
       }
     }
@@ -182,7 +211,11 @@ export const useGameinitialization = (
     }
 
     if (pellets.length - 1 === 0) {
-      cancelAnimationFrame(animationId)
+      if (totalLife !== 0) {
+        startGame()
+      } else {
+        endGame()
+      }
     }
 
     boundaries.forEach(boundary => {
@@ -283,7 +316,7 @@ export const useGameinitialization = (
         if (ghost.scared) {
           ghosts.splice(i, 1)
         } else {
-          cancelAnimationFrame(animationId)
+          updateLife()
         }
       }
     }
@@ -315,14 +348,24 @@ export const useGameinitialization = (
   }
 
   useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => {
+      endGame()
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [])
+
+  const startGame = (): void => {
     const canvas = canvasRef?.current
     const ctx = canvas?.getContext('2d') as CanvasRenderingContext2D
     if (!canvas) {
       return
     }
 
-    canvas.height = gameHeight
-    canvas.width = gameWidth
+    canvas.height = GAME_CONFIG.gameHeight
+    canvas.width = GAME_CONFIG.gameWidth
 
     map.forEach((row, indexRow) => {
       row.forEach((symbol, indexSymbol) => {
@@ -398,14 +441,9 @@ export const useGameinitialization = (
         color: 'pink',
       }),
     ]
-    animate(ctx, player, ghosts)
 
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-    return () => {
-      cancelAnimationFrame(animationId)
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [])
+    animate(ctx, player, ghosts)
+  }
+
+  return startGame
 }
