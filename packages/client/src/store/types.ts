@@ -1,3 +1,4 @@
+import { LeaderBoardItem } from '../types/FormApi'
 import { store } from './index'
 
 export type AppDispatch = typeof store.dispatch
@@ -13,6 +14,10 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+}
+
+export interface LeaderBoardState {
+  items: LeaderBoardItem[] | []
 }
 
 export type RootState = ReturnType<typeof store.getState>

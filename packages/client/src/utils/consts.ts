@@ -4,3 +4,5 @@ export const AUTHORIZATION_STATUS = {
   NO_AUTH: 'NO_AUTH',
   UNKNOWN: 'UNKNOWN',
 }
+
+export const ratingFieldName = 'pacman_mavericks_scores'
