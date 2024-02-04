@@ -14,10 +14,17 @@
   height: 100%;
   background: black;
   text-align: center;
+  position: relative;
 }
 
 .container {
   padding: 24px;
+}
+
+.fullscreen {
+  position: absolute;
+  bottom: 24px;
+  width: 100%;
 }
 
 :global(.ant-progress-text) {
