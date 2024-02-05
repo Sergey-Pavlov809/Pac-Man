@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { gsap } from 'gsap'
-//import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 
 import background from 'assets/maze-background.svg'
 import css from './Pacman.module.css'
 
-//gsap.registerPlugin(MotionPathPlugin)
+gsap.registerPlugin(MotionPathPlugin)
 
 export const Pacman: React.FC = () => {
   const tl = React.useRef<gsap.core.Timeline>()
