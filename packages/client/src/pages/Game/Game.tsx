@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Flex, Typography } from 'antd'
 import { GameCountDown } from '../../components'
-import { useGameCountDown } from '../../hooks'
+import { useGameCountDown, useFullscreen } from '../../hooks'
 
 import { useGameinitialization } from './useGameinitialization'
 import { GAME_CONFIG } from './const'
@@ -16,6 +16,8 @@ export const Game: React.FC<GameProps> = ({ setFinishStatus }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
   const scoreRef = React.useRef<HTMLSpanElement>(null)
   const lifeRef = React.useRef<HTMLSpanElement>(null)
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  useFullscreen(containerRef)
 
   const start = useGameinitialization(
     { canvasRef, scoreRef, lifeRef },
@@ -29,7 +31,7 @@ export const Game: React.FC<GameProps> = ({ setFinishStatus }) => {
   })
 
   return (
-    <div className={css.root}>
+    <div ref={containerRef} className={css.root}>
       {secondsLeft === GAME_CONFIG.countdown_seconds_end ? (
         <>
           <div className={css.container}>
@@ -54,6 +56,14 @@ export const Game: React.FC<GameProps> = ({ setFinishStatus }) => {
           maxPercent={GAME_CONFIG.countdown_max_percent}
         />
       )}
+      <p className={css.fullscreen}>
+        <Typography.Text style={{ color: 'white' }}>
+          Полноэкранный режим:
+          <Typography.Text keyboard style={{ color: 'white' }}>
+            f
+          </Typography.Text>
+        </Typography.Text>
+      </p>
     </div>
   )
 }
