@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useAppDispatch } from '../../hooks'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 import { setScore } from '../../store/modules/game/reducer'
 
 import { Boundary } from './Boundary'
@@ -10,6 +10,8 @@ import { Pellet } from './Pellet'
 import { Ghost } from './Ghost'
 import { PowerUp } from './Power'
 import { GAME_CONFIG } from './const'
+import { selectAuth } from '../../store/modules/auth/reducer'
+import { postScores } from '../../store/modules/leaderboard/reducer'
 
 export const useGameinitialization = (
   {
@@ -24,6 +26,7 @@ export const useGameinitialization = (
   setFinishStatus: () => void
 ): (() => void) => {
   const dispatch = useAppDispatch()
+  const { login } = useAppSelector(selectAuth)
   const boundaries: Boundary[] = []
   const pellets: Pellet[] = []
   let totalScore = GAME_CONFIG.totalScore
@@ -102,6 +105,7 @@ export const useGameinitialization = (
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('keyup', handleKeyUp)
     dispatch(setScore(totalScore))
+    dispatch(postScores({ login: login ?? 'anonymous', scores: totalScore }))
     setTimeout(() => setFinishStatus(), 500)
   }
 

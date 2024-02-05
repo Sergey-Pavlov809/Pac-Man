@@ -15,7 +15,6 @@ const useSignIn = (): useSignIn => {
   const dispatch = useAppDispatch()
 
   const login = async (values: LoginFromApi): Promise<void> => {
-    console.log('Received values of form: ', values)
     try {
       const response = await yApiService.login(values)
       dispatch(fetchUserData())

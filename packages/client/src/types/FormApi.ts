@@ -22,3 +22,12 @@ export interface RegistrationFromApi {
   password: string
   phone: string
 }
+
+export interface LeaderBoardItem {
+  userName: string
+  pacman_mavericks_scores: number
+}
+
+export interface LeaderBoardApi {
+  data: LeaderBoardItem
+}
