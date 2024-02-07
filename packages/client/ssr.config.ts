@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import * as path from 'path'
+import packageJson from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    __SERVER_PORT__: process.env.SERVER_PORT,
+    contributors: packageJson.contributors,
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'ssr.tsx'),

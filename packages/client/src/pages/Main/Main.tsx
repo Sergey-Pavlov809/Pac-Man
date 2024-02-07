@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 
 import { Button, Flex, Typography, Col, Row } from 'antd'
 
-import { Paths } from 'config/constants'
+import { routes } from 'config/routes'
 import css from './Main.module.css'
 import { Pacman } from './components'
 
@@ -13,7 +13,7 @@ export const Main: React.FC = () => {
   const navigate = useNavigate()
 
   const handleNavigate = (): void => {
-    navigate(Paths.Game)
+    navigate(routes.game())
   }
 
   return (

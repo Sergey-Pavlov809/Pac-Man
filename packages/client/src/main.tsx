@@ -1,5 +1,4 @@
 import ReactDOM from 'react-dom/client'
-import { AppRouter } from 'config/router'
 import 'antd/dist/reset.css'
 import './index.css'
 import { setupStore } from './store'
@@ -11,6 +10,7 @@ import {
 import { BrowserRouter } from 'react-router-dom'
 import { ErrorComponent } from 'components/error/ErrorComponent'
 import { ErrorBoundary } from 'react-error-boundary'
+import { AppRouter } from 'config/router'
 
 /**
  * Активировать SW будем в production режиме, но для временно для тестов добавляю DEV

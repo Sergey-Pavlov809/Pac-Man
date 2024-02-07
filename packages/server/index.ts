@@ -63,9 +63,10 @@ async function startServer(): Promise<void> {
         ? await import(ssrClientPath)
         : await vite!.ssrLoadModule(path.resolve(srcPath, 'ssr.tsx'))
 
-      const { initialStore, renderResult } = await render(url)
+      const { initialStore, renderResult, styleText } = await render(url)
 
       template = template.replace('<!--ssr-outlet-->', renderResult)
+      template = template.replace('<!--ssr-styles-->', styleText)
       template = template.replace(
         '<!--store-data-->',
         JSON.stringify(initialStore).replace(/</g, '\\u003c')

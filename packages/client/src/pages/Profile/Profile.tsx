@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Navigate } from 'react-router'
-import { Paths } from 'config/constants'
+import { routes } from 'config/routes'
 import { Flex, Upload, UploadProps } from 'antd'
 import defaultAvatar from 'assets/defaultAvatar.png'
 import { Button } from './components'
@@ -37,7 +37,7 @@ export const Profile: React.FC = () => {
   }, [])
 
   if (!isAuthenticated) {
-    return <Navigate to={Paths.SignIn} replace />
+    return <Navigate to={routes.signin()} replace />
   }
 
   return (
