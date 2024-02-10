@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { AUTHORIZATION_STATUS } from '../../../utils/consts'
 import { AuthState, RootState } from '../../types'
 import yApiService from '../../../services/y-api-service'
@@ -33,7 +33,11 @@ export const fetchUserData = createAsyncThunk(
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setAvatar: (state, { payload }: PayloadAction<string>) => {
+      state.avatar = payload
+    },
+  },
   extraReducers: ({ addCase }) => {
     addCase(fetchUserData.pending, state => {
       state.authorizedStatus = AUTHORIZATION_STATUS.LOADING
@@ -56,6 +60,8 @@ export const authSlice = createSlice({
 })
 
 const authReducer = authSlice.reducer
+
+export const { setAvatar } = authSlice.actions
 
 export const selectAuth = (state: RootState): AuthState => state.auth
 
