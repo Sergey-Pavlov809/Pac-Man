@@ -1,18 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import yApiService from '../../../services/y-api-service'
 import { LoginFromApi } from '../../../types/FormApi'
-import { useAppDispatch } from '../../../hooks/useAppDispatch'
-import { fetchUserData } from '../../../store/modules/auth/reducer'
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppDispatch'
+import {
+  fetchUserData,
+  fetchYandexId,
+  loginWithYandex,
+  selectAuth,
+} from '../../../store/modules/auth/reducer'
 
 interface useSignIn {
   isLogin: boolean
   login: (values: LoginFromApi) => Promise<void>
+  yandexOAuthUrl: string
 }
 
 const useSignIn = (): useSignIn => {
   const [isLogin, setIsLogin] = useState(false)
 
   const dispatch = useAppDispatch()
+
+  const { yandexOAuthId } = useAppSelector(selectAuth)
+
+  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=http://localhost:3000`
 
   const login = async (values: LoginFromApi): Promise<void> => {
     try {
@@ -26,6 +36,10 @@ const useSignIn = (): useSignIn => {
     }
   }
 
+  useEffect(() => {
+    dispatch(fetchYandexId())
+  }, [dispatch])
+
   const checkUserAuth = async (): Promise<void> => {
     await yApiService.getUser()
   }
@@ -33,6 +47,7 @@ const useSignIn = (): useSignIn => {
   return {
     isLogin,
     login,
+    yandexOAuthUrl,
   }
 }
 
