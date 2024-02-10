@@ -15,7 +15,7 @@ export const Pacman: React.FC = () => {
   const pacmanBottom = React.useRef(null)
 
   const attachAnimation = (): gsap.Context => {
-    const ctx = gsap.context(() => {
+    return gsap.context(() => {
       tl.current = gsap
         .timeline()
         .to(
@@ -56,7 +56,6 @@ export const Pacman: React.FC = () => {
           0
         )
     })
-    return ctx
   }
 
   React.useLayoutEffect(() => {

@@ -14,7 +14,7 @@ import {
 import cn from 'classnames'
 import css from './Profile.module.css'
 import { ChangePassword } from './components/ChangePassword'
-import { useAppDispatch, useAppSelector } from '../../hooks'
+import { useAppDispatch, useAppSelector } from 'hooks'
 import {
   fetchUserData,
   selectAuth,

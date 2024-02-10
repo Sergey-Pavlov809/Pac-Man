@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Flex, Typography } from 'antd'
 import { GameCountDown } from '../../components'
-import { useGameCountDown, useFullscreen } from '../../hooks'
+import { useGameCountDown, useFullscreen } from 'hooks'
 
 import { useGameInitialization } from './useGameInitialization'
 import { GAME_CONFIG } from './const'

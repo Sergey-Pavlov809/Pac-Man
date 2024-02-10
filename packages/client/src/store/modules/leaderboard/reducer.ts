@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import yApiService from 'services/y-api-service'
 import { message } from 'antd'
 import { LeaderBoardState, RootState } from 'store/types'
@@ -13,8 +13,7 @@ export const fetchLeaderBoard = createAsyncThunk(
   'leaderboard/fetchLeaderBoard',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await yApiService.getLeaderBoard()
-      return response
+      return await yApiService.getLeaderBoard()
     } catch (error) {
       return rejectWithValue(`Ошибка загрузки данных: ${error}`)
     }
