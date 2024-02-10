@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useAppDispatch'
 import {
   fetchUserData,
   fetchYandexId,
-  loginWithYandex,
   selectAuth,
 } from '../../../store/modules/auth/reducer'
 
