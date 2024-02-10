@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 
 import { Button, Flex, Typography, Col, Row } from 'antd'
 
-import { routes } from '../../routes'
+import { routes } from 'config/routes'
 import css from './Main.module.css'
 import { Pacman } from './components'
 

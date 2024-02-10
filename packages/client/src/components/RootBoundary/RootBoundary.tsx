@@ -1,6 +1,5 @@
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom'
-import ServerErrorPage from '../../pages/500/500'
-import NotFoundPage from '../../pages/404/404'
+import { ServerErrorPage, NotFoundPage } from 'pages/index'
 
 function RootBoundary(): React.ReactElement {
   const error = useRouteError()

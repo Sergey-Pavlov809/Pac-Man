@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Navigate } from 'react-router'
-import { routes } from '../../routes'
+import { routes } from 'config/routes'
 import { Flex, Upload, UploadProps } from 'antd'
-import defaultAvatar from '../../assets/defaultAvatar.png'
+import defaultAvatar from 'assets/defaultAvatar.png'
 import { Button } from './components'
 import {
   cardStyle,
@@ -19,7 +19,7 @@ import {
   fetchUserData,
   selectAuth,
   setAvatar,
-} from '../../store/modules/auth/reducer'
+} from 'store/modules/auth/reducer'
 
 export const Profile: React.FC = () => {
   const [isOpenPopup, setIsOpenPopup] = React.useState(false)

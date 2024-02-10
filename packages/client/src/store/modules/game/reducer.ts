@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { RootState } from '../../types'
+import { RootState } from 'store/types'
 
 type GameState = {
   score: number

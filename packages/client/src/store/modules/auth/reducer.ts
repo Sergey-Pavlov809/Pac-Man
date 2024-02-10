@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { AUTHORIZATION_STATUS } from '../../../utils/consts'
-import { AuthState, RootState } from '../../types'
-import yApiService from '../../../services/y-api-service'
+import { AUTHORIZATION_STATUS } from 'utils/consts'
+import { AuthState, RootState } from 'store/types'
+import yApiService from 'services/y-api-service'
 import { message } from 'antd'
 
 const initialState: AuthState = {
@@ -13,7 +13,6 @@ const initialState: AuthState = {
   first_name: null,
   second_name: null,
   avatar: null,
-  password: null,
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
 }
 

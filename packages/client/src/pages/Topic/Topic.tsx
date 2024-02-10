@@ -11,10 +11,10 @@ import {
 import { useEffect, useState, JSX } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import defaultAvatar from '../../assets/defaultAvatar.png'
-import { ForumApi, IComment, ITopic } from '../../services'
+import defaultAvatar from 'assets/defaultAvatar.png'
+import { ForumApi, IComment, ITopic } from 'services/index'
 import css from './Topic.module.css'
-import { getHumanReadableDate } from '../../utils/getHumanReadableDate'
+import { getHumanReadableDate } from 'utils/getHumanReadableDate'
 
 const { Title, Text } = Typography
 

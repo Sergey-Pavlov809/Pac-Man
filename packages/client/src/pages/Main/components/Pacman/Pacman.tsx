@@ -2,7 +2,7 @@ import * as React from 'react'
 import { gsap } from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 
-import background from '../../../../assets/maze-background.svg'
+import background from 'assets/maze-background.svg'
 import css from './Pacman.module.css'
 
 gsap.registerPlugin(MotionPathPlugin)
