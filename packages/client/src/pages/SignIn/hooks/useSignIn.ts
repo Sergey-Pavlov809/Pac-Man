@@ -7,6 +7,7 @@ import {
   fetchYandexId,
   selectAuth,
 } from '../../../store/modules/auth/reducer'
+import { redirectUrl } from './constants'
 
 interface useSignIn {
   isLogin: boolean
@@ -21,7 +22,7 @@ const useSignIn = (): useSignIn => {
 
   const { yandexOAuthId } = useAppSelector(selectAuth)
 
-  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=http://localhost:3000`
+  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${redirectUrl}`
 
   const login = async (values: LoginFromApi): Promise<void> => {
     try {
