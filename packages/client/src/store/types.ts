@@ -8,6 +8,7 @@ export interface AuthState {
   display_name: string | null
   login: string | null
   email: string | null
+  password: string | null
   phone: string | null
   avatar: string | null
   authorizedStatus: string

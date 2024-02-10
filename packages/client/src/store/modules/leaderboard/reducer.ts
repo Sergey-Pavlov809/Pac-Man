@@ -15,6 +15,7 @@ export const fetchLeaderBoard = createAsyncThunk(
     try {
       return await yApiService.getLeaderBoard()
     } catch (error) {
+      message.error(`Ошибка загрузки данных: ${error}`)
       return rejectWithValue(`Ошибка загрузки данных: ${error}`)
     }
   }
@@ -55,7 +56,6 @@ export const leaderBoardSlice = createSlice({
       state.error = action.payload
         ? String(action.payload)
         : 'Неизвестная ошибка'
-      message.error(`Ошибка загрузки данных: ${state.error}`)
     })
   },
 })
