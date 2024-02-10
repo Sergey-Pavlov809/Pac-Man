@@ -1,7 +1,7 @@
 import { EventEmitter } from '../EventEmitter/EventEmitter'
 import { ScenarioEvent } from './typings'
 import {
-  type Direction,
+  Direction,
   EntityEvent,
   type EntitySettings,
 } from '../../entities/Entity/typings'
@@ -13,22 +13,44 @@ import { PlayerState, type PlayerVariant } from '../../entities/Player/typings'
 import { Player } from '../../entities/Player/Player'
 import { type Controller } from '../Controller/typings'
 import { ControllerEvent } from '../Controller/data'
+import { Ghost } from '../../entities/Ghost/Ghost'
+import { ghostInitialSettings } from '../../entities/Ghost/data'
+import { type GhostVariant } from '../../entities/Ghost/typings'
+import { TerrainType } from '../../entities/Terrain/data'
+import { Food } from '../../entities/Food/Food'
+import { FoodType } from '../../entities/Food/data'
+import { Life } from '../../entities/Life/Life'
+import { LifeType } from '../../entities/Life/data'
 
 export { ScenarioEvent }
 
 export class Scenario extends EventEmitter<ScenarioEvent> {
   /** Сервис, который загружает игровые карты. */
   mapManager: MapManager
+  /** Игроки на карте. */
+  player1: Player | null
+  player2: Player | null
 
   /** Призраки на карте. */
-  //activeEnemies: GhostEnemy[] = [];
+  ghosts: Ghost[] = []
+
+  /** Ворота базы на карте. */
+  gates: Terrain[] = []
+
+  /** Жизни на карте. */
+  life1: Life[] = []
+  life2: Life[] = []
+
+  /** Количество еды на карте. */
+  amountOfFoodLeft = 0
 
   constructor(private game: Game) {
     super()
     this.mapManager = new MapManager(game)
+    this.player1 = null
+    this.player2 = null
 
     this.createTerrain()
-    this.createPlayers()
   }
 
   /** Создаёт статические объекты. */
@@ -37,30 +59,127 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
     const map = this.mapManager.getMap()
     const entities = this.mapManager.mapDataToEntitySettings(map)
     entities.forEach(settings => {
-      this.createEntity(settings)
+      switch (settings.type) {
+        case 'pacman':
+          this.createPlayer(settings)
+          break
+        case 'ghost':
+          this.createGhost(settings)
+          break
+        default:
+          this.createEntity(settings)
+      }
+    })
+  }
+
+  resetPosition(): void {
+    ;[this.player1, this.player2, ...this.ghosts].forEach(entity =>
+      entity?.despawn()
+    )
+
+    this.player1 = null
+    this.player2 = null
+    this.ghosts = []
+
+    const map = this.mapManager.getMap()
+    const entities = this.mapManager.mapDataToEntitySettings(map)
+    entities.forEach(settings => {
+      switch (settings.type) {
+        case 'pacman':
+          this.createPlayer(settings)
+          break
+        case 'ghost':
+          this.createGhost(settings)
+          break
+      }
     })
   }
 
   /** Размещает отдельный статический элемент на карте. */
   createEntity(props: EntitySettings): void {
-    const entity = new Terrain(props)
+    let entity
+    switch (props.type) {
+      case 'food':
+        entity = new Food(props)
+        ++this.amountOfFoodLeft
+        break
+      case 'life':
+        if (
+          props.variant === LifeType.Life1 &&
+          this.game.state.playerOne.lives < this.game.state.defaultPlayerLives
+        ) {
+          this.game.state.playerOne.lives++
+          entity = new Life(props)
+          this.life1.push(entity)
+        } else if (
+          this.game.state.mode === 'MULTIPLAYER' &&
+          props.variant === LifeType.Life2 &&
+          this.game.state.playerTwo.lives < this.game.state.defaultPlayerLives
+        ) {
+          this.game.state.playerTwo.lives++
+          entity = new Life(props)
+          this.life2.push(entity)
+        } else {
+          return
+        }
+
+        break
+      default:
+        entity = new Terrain(props)
+        if (entity.variant === TerrainType.Gate) {
+          this.gates.push(entity)
+        }
+        break
+    }
+
     this.game.addEntity(entity)
+
+    entity.spawn(props)
+  }
+
+  /** Создаем призраков. */
+  createGhost(props: EntitySettings): void {
+    const { variant, ...restProps } = props
+    const settings = {
+      ...ghostInitialSettings[variant as GhostVariant],
+      variant: variant as GhostVariant,
+      ...restProps,
+    }
+    const entity = new Ghost(settings)
+    this.game.addEntity(entity)
+    this.ghosts.push(entity)
+
+    entity.on(EntityEvent.openGate, () => {
+      this.gates.forEach(gate => gate.openGate())
+    })
+
     entity.spawn(props)
   }
 
   /** Создаёт игроков. */
-  createPlayers(): void {
-    if (this.game.state.mode === 'SINGLEPLAYER') {
-      this.createPlayerPacman(PlayerType.Player1)
-    } else if (this.game.state.mode === 'MULTIPLAYER') {
-      this.createPlayerPacman(PlayerType.Player1)
-      this.createPlayerPacman(PlayerType.Player2)
+  createPlayer(playerSettings: EntitySettings = {} as EntitySettings): void {
+    const { variant } = playerSettings as { variant: PlayerType }
+    if (variant === PlayerType.Player1) {
+      this.player1 = this.createPlayerPacman(PlayerType.Player1, playerSettings)
+    } else if (
+      variant === PlayerType.Player2 &&
+      this.game.state.mode === 'MULTIPLAYER'
+    ) {
+      this.player2 = this.createPlayerPacman(PlayerType.Player2, playerSettings)
     }
   }
 
-  /** Создаёт отдельного  игрока. */
-  createPlayerPacman(playerType: PlayerType = PlayerType.Player1): void {
-    const settings = playerInitialSettings[playerType]
+  /** Создаёт отдельного игрока. */
+  createPlayerPacman(
+    playerType: PlayerType = PlayerType.Player1,
+    playerSettings: EntitySettings
+  ): Player {
+    const { variant, ...restProps } = playerSettings
+    const settings = {
+      ...playerInitialSettings[playerType],
+      variant: variant as PlayerType,
+      ...restProps,
+    }
 
     const playerState = this.getPlayerState(playerType)
 
@@ -69,10 +188,62 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
 
     entity
       .on(EntityEvent.Spawn, () => {
-        // Событиепри появлении
+        entity.moving = true
+      })
+      .on(EntityEvent.PlayerCaught, () => {
+        ;[this.player1, this.player2, ...this.ghosts].forEach(entity => {
+          if (entity) {
+            entity.frozen = true
+          }
+        })
+        if (entity.variant === PlayerType.Player1) {
+          if (this.life1.length > 0) {
+            this.life1[this.life1.length - 1].blink()
+          }
+        } else {
+          if (this.life2.length > 0) {
+            this.life2[this.life2.length - 1].blink()
+          }
+        }
+      })
+      .on(EntityEvent.PlayerAteFood, (food: Food) => {
+        food.despawn()
+        --this.amountOfFoodLeft
+
+        switch (food.variant) {
+          case FoodType.Power:
+            if (entity.variant === PlayerType.Player1) {
+              this.game.state.playerOne.score += 50
+            } else {
+              this.game.state.playerTwo.score += 50
+            }
+            break
+          default:
+            if (entity.variant === PlayerType.Player1) {
+              this.game.state.playerOne.score += 10
+            } else {
+              this.game.state.playerTwo.score += 10
+            }
+            break
+        }
+
+        if (this.amountOfFoodLeft === 0) {
+          this.emit(ScenarioEvent.MissionAccomplished)
+        }
       })
       .on(EntityEvent.Destroyed, () => {
         --playerState.lives
+        if (entity.variant === PlayerType.Player1) {
+          if (this.life1.length > 0) {
+            this.life1[this.life1.length - 1].despawn()
+            this.life1.pop()
+          }
+        } else {
+          if (this.life2.length > 0) {
+            this.life2[this.life2.length - 1].despawn()
+            this.life2.pop()
+          }
+        }
 
         const playerOneIsOut = this.game.state.playerOne.lives < 0
         const playerTwoIsOut =
@@ -84,7 +255,7 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
         }
 
         if (playerState.lives >= 0) {
-          this.createPlayerPacman(playerType)
+          this.resetPosition()
         }
       })
 
@@ -95,8 +266,16 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
     }
     this.trySpawnPlayer(entity)
 
-    // Если игра окончена, останавливаем игроков
+    // Если игра проиграна, останавливаем игроков
     this.on(ScenarioEvent.GameOver, () => {
+      if (entity && entity.spawned) {
+        entity.frozen = true
+        entity.stop()
+      }
+    })
+
+    // Если игра выйграна, останавливаем игроков
+    this.on(ScenarioEvent.MissionAccomplished, () => {
       if (entity && entity.spawned) {
         entity.frozen = true
         entity.stop()
@@ -108,12 +287,14 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
     controller
       .offAll(ControllerEvent.Move)
       .on(ControllerEvent.Move, (direction: Direction) => {
-        entity.move(direction)
+        entity.turn(direction)
       })
       .offAll(ControllerEvent.Stop)
       .on(ControllerEvent.Stop, () => {
-        entity.stop()
+        //entity.stop()
       })
+
+    return entity
   }
 
   getPlayerState(playerType: Player | PlayerVariant): PlayerState {

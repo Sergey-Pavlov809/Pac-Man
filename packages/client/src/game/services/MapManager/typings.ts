@@ -1,1 +1,6 @@
-export type MapTerrainData = TupleArray<TupleArray<number, 28>, 31>
+export type MapTerrainData = {
+  data: number[]
+  width: number
+  height: number
+}
+//TupleArray<TupleArray<number, 28>, 31>

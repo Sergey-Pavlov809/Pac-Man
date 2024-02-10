@@ -12,7 +12,7 @@ export class State {
   /** Ширина игрового поля в игровых клетках. */
   width = 28 * 4
   /** Высота игрового поля в игровых клетках. */
-  height = 31 * 4
+  height = 34 * 4
 
   /** Текущий игровой уровень. */
   level = 1
@@ -24,11 +24,13 @@ export class State {
 
   /** Состояние первого игрока (жизни). */
   playerOne = {
-    lives: this.defaultPlayerLives,
+    lives: 0,
+    score: 0,
   }
   /** Состояние второго игрока (жизни). */
   playerTwo = {
-    lives: this.defaultPlayerLives,
+    lives: 0,
+    score: 0,
   }
 
   // Таймауты

@@ -3,10 +3,11 @@ import { Game } from '../Game/Game'
 import {
   AnimationSettings,
   GetSpriteCoordinates,
+  LayerEntity,
   LayerList,
   LayerObject,
 } from './typings'
-import { type Entity } from '../../entities/Entity/Entity'
+import { Entity } from '../../entities/Entity/Entity'
 import { EntityEvent, type Rect } from '../../entities/Entity/typings'
 import { Player } from '../../entities/Player/Player'
 import { ResourcesEvent, SpriteName } from '../Resources/data'
@@ -94,7 +95,8 @@ export class View extends EventEmitter {
           this.drawOnLayer(entity, layerId)
         },
         [EntityEvent.ShouldBeDestroyed]: () => {
-          //Событие до удаления
+          this.eraseFromLayer(entity, layerId)
+          this.removeEntityFromLayer(entity, layerId)
         },
         [EntityEvent.Destroyed]: () => {
           // Событие после удаления
@@ -105,6 +107,26 @@ export class View extends EventEmitter {
 
     for (const [eventName, callback] of Object.entries(layerObject.listeners)) {
       entity.on(eventName as EntityEvent, callback)
+    }
+  }
+
+  /** Удаляет сущность с canvas-слоя, очищает ее listeners. */
+  removeEntityFromLayer(entity: Entity, layerId: keyof LayerList): void {
+    let entityToDelete: LayerEntity | null = null
+
+    for (const layerEntity of this.layers[layerId].entities) {
+      if (layerEntity.instance === entity) {
+        entityToDelete = layerEntity
+      }
+    }
+
+    if (entityToDelete) {
+      this.layers[layerId].entities.delete(entityToDelete)
+      for (const [eventName, callback] of Object.entries(
+        entityToDelete.listeners
+      )) {
+        entity.off(eventName as EntityEvent, callback)
+      }
     }
   }
 
@@ -341,11 +363,27 @@ export class View extends EventEmitter {
   getActualRect(
     item: Entity | Rect
   ): readonly [number, number, number, number] {
+    let { posX, posY, width, height } = item
+
+    // Увеличим все объекты кроме лабиринта
+    if (
+      item instanceof Entity &&
+      item.type !== 'wall' &&
+      item.type !== 'life'
+    ) {
+      const deltaX = width * 0.65
+      const deltaY = height * 0.65
+      posX -= deltaX / 2
+      width += deltaX
+      posY -= deltaY / 2
+      height += deltaY
+    }
+
     return [
-      this.convertToPixels(item.posX),
-      this.convertToPixels(item.posY),
-      this.convertToPixels(item.width),
-      this.convertToPixels(item.height),
+      this.convertToPixels(posX),
+      this.convertToPixels(posY),
+      this.convertToPixels(width),
+      this.convertToPixels(height),
     ] as const
   }
 

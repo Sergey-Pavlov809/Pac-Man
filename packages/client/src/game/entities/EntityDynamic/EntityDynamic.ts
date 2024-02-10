@@ -2,6 +2,7 @@ import { Entity } from '../Entity/Entity'
 import {
   Direction,
   EntityEvent,
+  type Pos,
   type PosState,
   type Rect,
 } from '../Entity/typings'
@@ -9,7 +10,9 @@ import { type EntityDynamicSettings } from './typings'
 
 export abstract class EntityDynamic extends Entity {
   /** Должен ли объект двигаться. */
-  moving = false
+  moving = true
+  /** Должен ли всегда двигаться */
+  alwaysMove = false
   /** Прекращает ли объект движение (он должен стать по целочисленным координатам). */
   stopping = false
   /** Может ли объект двигаться дальше. */
@@ -21,19 +24,33 @@ export abstract class EntityDynamic extends Entity {
   /** На сколько клеток за раз перемещается объект. */
   movePace = 2
   /** Скорость движения объекта. */
-  moveSpeed = 3
+  moveSpeed = 8
   /** Сколько игровых циклов хода пройдено. */
   moveStepsProgress = 0
   /** За сколько игровых циклов объект совершает один ход. */
   moveStepsTotal = 12
   /** Новое направление, по которому объект начнёт движение после завершения полного хода. */
-  nextDirection = Direction.Up
+  nextDirection = Direction.Left
   /** Временно блокирует возможность перемещения (например на время отрисовки анимации спауна). */
   frozen = false
 
   constructor(props: EntityDynamicSettings) {
     super(props)
     this.movable = true
+  }
+
+  resetPosition(coords?: Pos): void {
+    this.spawn(coords)
+    if (!this.spawned) {
+      this.setLoopDelay(this.resetPosition.bind(this, coords), 200)
+    } else {
+      this.lastRect = null
+      this.nextRect = null
+      this.moveStepsProgress = 0
+      this.frozen = false
+      this.crossable = false
+      this.shouldBeDestroyed = false
+    }
   }
 
   /** Рассчитывает количество игровых циклов для одного хода с поправкой на скорость */
@@ -48,22 +65,18 @@ export abstract class EntityDynamic extends Entity {
 
   /** Начинает движение объекта в заданном направлении. */
   move(direction: Direction): void {
-    this.moving = true
-    this.nextDirection = direction
-
     if (this.spawned && !this.frozen) {
+      this.moving = true
+      this.nextDirection = direction
       this.emit(EntityEvent.Move)
     }
   }
 
-  /** Поворачивает объект на месте. */
-  turn(newDirection: Direction = this.nextDirection): void {
-    if (this.direction !== newDirection) {
-      this.emit(EntityEvent.Stop)
-      if (this.moving) {
-        this.emit(EntityEvent.Move)
-      }
-      this.setState({ direction: newDirection })
+  /** Поворачивает объект. */
+  turn(newDirection: Direction): void {
+    if (this.spawned && !this.frozen) {
+      this.moving = true
+      this.nextDirection = newDirection
     }
   }
 
@@ -99,17 +112,38 @@ export abstract class EntityDynamic extends Entity {
       return
     }
 
+    const occupiedCell: Entity[] = []
+    this.emit(EntityEvent.CheckOccupiedCell, occupiedCell)
+    if (occupiedCell.length > 0) {
+      if (!this.checkCellOccupancy(occupiedCell)) {
+        return
+      }
+    }
+
+    if (!this.isItPossibleToMove()) {
+      return
+    }
+
     const hasNewDirection = this.stopping
       ? false
       : this.direction !== this.nextDirection
 
     if (hasNewDirection) {
       // Тут поворот
+      const oldDirection = this.direction
+      this.direction = this.nextDirection
       this.prepareToMove()
-      this.turn()
-    } else {
-      this.prepareToMove()
+      if (this.canMove) {
+        this.move(this.direction)
+      } else {
+        this.direction = oldDirection
+      }
+    }
+    this.prepareToMove()
+    if (this.canMove) {
       this.moveStep()
+    } else {
+      this.stop()
     }
   }
 
@@ -133,8 +167,21 @@ export abstract class EntityDynamic extends Entity {
     }
   }
 
+  //Дополнительные действия, когда сущности в одной ячейке
+  checkCellOccupancy(_entities: Entity[]): boolean {
+    return true
+  }
+
+  //Дополнительные проверки перед движением
+  isItPossibleToMove(): boolean {
+    return true
+  }
+
   /** Рассчитывает координаты следующего хода. */
-  getNextMove(fullMove = false): { posX: number } | { posY: number } {
+  getNextMove(
+    fullMove = false,
+    direction: Direction | undefined = undefined
+  ): { posX: number } | { posY: number } {
     let movePace = 0
     if (fullMove) {
       movePace = this.movePace
@@ -142,16 +189,26 @@ export abstract class EntityDynamic extends Entity {
       movePace = this.getMoveStepPace()
     }
 
-    switch (this.direction) {
+    let newPos
+
+    switch (direction || this.direction) {
       case Direction.Up:
-        return { posY: this.posY - movePace }
+        newPos = { posY: this.posY - movePace }
+        break
       case Direction.Down:
-        return { posY: this.posY + movePace }
+        newPos = { posY: this.posY + movePace }
+        break
       case Direction.Left:
-        return { posX: this.posX - movePace }
+        newPos = { posX: this.posX - movePace }
+        break
       case Direction.Right:
-        return { posX: this.posX + movePace }
+        newPos = { posX: this.posX + movePace }
+        break
     }
+
+    this.emit(EntityEvent.CheckExitAbroad, newPos)
+
+    return newPos
   }
 
   /** Выполняет проверку на то, может ли объект двигаться дальше. */

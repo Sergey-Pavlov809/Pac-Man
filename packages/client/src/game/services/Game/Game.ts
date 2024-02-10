@@ -16,7 +16,6 @@ import { ControllerKeyboard } from '../Controller/ControllerKeyboard'
 import { ControllerPointer } from '../Controller/ControllerPointer'
 import { Zone } from '../Zone/Zone'
 import { Resources, ResourcesEvent } from '../Resources/Resources'
-import { Status } from '../Resources/data'
 
 export class Game extends EventEmitter {
   static __instance: Game
@@ -29,6 +28,7 @@ export class Game extends EventEmitter {
   controllerAll: Controller
   controllerPlayerOne: Controller
   controllerPlayerTwo: Controller
+  scenarioInit: boolean
 
   private constructor() {
     super()
@@ -43,6 +43,7 @@ export class Game extends EventEmitter {
     })
     this.controllerPlayerOne = this.createController(KeyBindingsWasd)
     this.controllerPlayerTwo = new ControllerKeyboard(KeyBindingsArrows)
+    this.scenarioInit = false
   }
 
   static create(): Game {
@@ -56,16 +57,15 @@ export class Game extends EventEmitter {
     this.unload()
     this.load(root)
 
-    if (this.resources.status === Status.Pending) {
-      this.resources.on(ResourcesEvent.Loaded, () => {
-        this.initScenario()
-      })
-    } else {
+    this.resources.on(ResourcesEvent.Loaded, () => {
       this.initScenario()
-    }
+    })
   }
 
   initScenario(): void {
+    if (this.scenarioInit) return
+
+    this.scenarioInit = true
     /** Инициализируем инстанс сценария */
     this.scenario = new Scenario(this)
       .on(ScenarioEvent.GameOver, async () => {

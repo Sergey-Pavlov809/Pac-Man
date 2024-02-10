@@ -1,19 +1,31 @@
-import { type Entity } from '../../entities/Entity/Entity'
+import { Entity } from '../../entities/Entity/Entity'
 import { type Game } from '../Game/Game'
-import { EntityEvent, PosState, Rect } from '../../entities/Entity/typings'
+import {
+  EntityEvent,
+  EntityPositions,
+  EntityType,
+  PosState,
+  Rect,
+} from '../../entities/Entity/typings'
 import { EntityDynamic } from '../../entities/EntityDynamic/EntityDynamic'
 import { Player } from '../../entities/Player/Player'
+import { Ghost } from '../../entities/Ghost/Ghost'
+import { Terrain } from '../../entities/Terrain/Terrain'
+import { TerrainType } from '../../entities/Terrain/data'
 
 enum ZoneLayers {
   Main = 0,
-  Secondary = 1,
-  Bonus = 2,
+  Ghosts = 1,
+  Pacman,
+  Food = 3,
 }
 
 export class Zone {
   width = 0
   height = 0
   matrix: Array<Array<Array<Entity | null>>>
+  baseRect: Rect | null = null
+  gateRect: Rect | null = null
 
   constructor(game: Game) {
     const { width, height } = game.state
@@ -38,10 +50,15 @@ export class Zone {
   }
 
   /** Возвращает слой матрицы, на которой должна находиться сущность */
-  getLayerByEntityType(entity: Entity): ZoneLayers {
-    switch (entity.type) {
-      case 'bonus':
-        return ZoneLayers.Bonus
+  getLayerByEntityType(entity: Entity | EntityType): ZoneLayers {
+    const type = entity instanceof Entity ? entity.type : entity
+    switch (type) {
+      case 'food':
+        return ZoneLayers.Food
+      case 'ghost':
+        return ZoneLayers.Ghosts
+      case 'pacman':
+        return ZoneLayers.Pacman
       default:
         return ZoneLayers.Main
     }
@@ -60,6 +77,8 @@ export class Zone {
         null
       )
     }
+    this.baseRect = null
+    this.gateRect = null
   }
 
   /** Алиас для registerEntity */
@@ -111,15 +130,79 @@ export class Zone {
 
   /** Подписывается на события сущности, которые отслеживаются для обновления матрицы */
   registerEntity(entity: Entity): void {
-    entity.on(EntityEvent.WillHaveNewPos, (posState: PosState) => {
-      const rect = posState.nextRect
-      if (this.hasCollision(rect, entity)) {
-        posState.hasCollision = true
-      } else {
-        const layer = this.getLayerByEntityType(entity)
-        this.updateMatrix(layer, rect, entity)
-      }
-    })
+    if (entity instanceof EntityDynamic) {
+      entity.on(EntityEvent.WillHaveNewPos, (posState: PosState) => {
+        const rect = posState.nextRect
+        if (this.hasCollision(rect, entity)) {
+          posState.hasCollision = true
+        } else {
+          const layer = this.getLayerByEntityType(entity)
+          this.updateMatrix(layer, rect, entity)
+        }
+      })
+
+      entity.on(
+        EntityEvent.CheckExitAbroad,
+        (newPos: { posX: number } | { posY: number }) => {
+          if ('posX' in newPos) {
+            if (newPos.posX <= 0) {
+              newPos.posX = this.width
+            } else if (newPos.posX >= this.width) {
+              newPos.posX = 0
+            }
+          }
+          if ('posY' in newPos) {
+            if (newPos.posY <= 0) {
+              newPos.posY = this.height
+            } else if (newPos.posY >= this.height) {
+              newPos.posY = 0
+            }
+          }
+        }
+      )
+
+      entity.on(EntityEvent.CheckOccupiedCell, (occupiedCell: Entity[]) => {
+        occupiedCell.push(...this.getEntitiesInCell(entity))
+      })
+
+      entity.on(
+        EntityEvent.CheckGhostAtBase,
+        (ghostAtBase: { atBase: boolean }) => {
+          ghostAtBase.atBase = this.checkGhostAtBase(entity)
+        }
+      )
+
+      entity.on(
+        EntityEvent.GetGatePosition,
+        (gatePosition: { rect: Rect | null }) => {
+          gatePosition.rect = this.getGatePosition()
+        }
+      )
+
+      entity.on(EntityEvent.CanMoveToNewPos, (posState: PosState) => {
+        const rect = posState.nextRect
+        posState.hasCollision = this.hasCollision(rect, entity)
+      })
+
+      entity.on(
+        EntityEvent.GetPositionEntity,
+        (entityPositions: EntityPositions) => {
+          const layer = this.getLayerByEntityType(entityPositions.type)
+          for (let x = 2; x < this.width; x = x + 4) {
+            for (let y = 2; y < this.height; y = y + 4) {
+              const ent = this.matrix[layer][x][y]
+              if (ent && entityPositions.type === ent.type) {
+                entityPositions.positions.push(ent.getRect())
+              }
+            }
+          }
+        }
+      )
+
+      entity.on(EntityEvent.ShouldBeDestroyed, () => {
+        this.deleteEntityFromMatrix(entity)
+      })
+    }
 
     entity.on(EntityEvent.ShouldUpdate, (newState: Partial<Entity>) => {
       if (!newState || !('posX' in newState) || !('posY' in newState)) {
@@ -137,10 +220,85 @@ export class Zone {
       }
       this.writeEntityToMatrix(entity)
     })
+  }
 
-    entity.on(EntityEvent.ShouldBeDestroyed, () => {
-      this.deleteEntityFromMatrix(entity)
-    })
+  checkGhostAtBase(entity: EntityDynamic): boolean {
+    const rect = entity.getRect()
+    const baseRect = this.getBaseRect()
+
+    if (baseRect) {
+      return (
+        baseRect.posX < rect.posX + rect.width &&
+        baseRect.posX + baseRect.width > rect.posX &&
+        baseRect.posY < rect.posY + rect.height &&
+        baseRect.posY + baseRect.height > rect.posY
+      )
+    }
+    return false
+  }
+
+  getGatePosition(): Rect | null {
+    if (!this.gateRect) {
+      const arrayX: number[] = []
+      const arrayY: number[] = []
+      for (let x = 0; x < this.width; ++x) {
+        for (let y = 0; y < this.height; ++y) {
+          const layerCell = this.matrix[ZoneLayers.Main][x]?.[y]
+          if (
+            layerCell instanceof Terrain &&
+            layerCell.variant === TerrainType.Gate
+          ) {
+            arrayX.push(x)
+            arrayY.push(y)
+          }
+        }
+      }
+      if (arrayX.length !== 0 && arrayY.length !== 0) {
+        const minX = Math.min(...arrayX)
+        const maxX = Math.max(...arrayX)
+        const minY = Math.min(...arrayY)
+        const maxY = Math.max(...arrayY)
+        this.gateRect = {
+          posX: minX,
+          posY: minY,
+          width: maxX - minX,
+          height: maxY - minY,
+        }
+      }
+    }
+    return this.gateRect
+  }
+
+  getBaseRect(): Rect | null {
+    if (!this.baseRect) {
+      const arrayX: number[] = []
+      const arrayY: number[] = []
+      for (let x = 0; x < this.width; ++x) {
+        for (let y = 0; y < this.height; ++y) {
+          const layerCell = this.matrix[ZoneLayers.Main][x]?.[y]
+          if (
+            layerCell instanceof Terrain &&
+            layerCell.variant === TerrainType.Base
+          ) {
+            arrayX.push(x)
+            arrayY.push(y)
+          }
+        }
+      }
+      if (arrayX.length !== 0 && arrayY.length !== 0) {
+        const minX = Math.min(...arrayX)
+        const maxX = Math.max(...arrayX)
+        const minY = Math.min(...arrayY)
+        const maxY = Math.max(...arrayY)
+        this.baseRect = {
+          posX: minX,
+          posY: minY,
+          width: maxX - minX,
+          height: maxY - minY,
+        }
+      }
+    }
+    return this.baseRect
   }
 
   /** Проверяет, все ли параметры прямоугольника целочисленные */
@@ -180,29 +338,83 @@ export class Zone {
     return false
   }
 
+  getEntitiesInCell(entity: Entity): Entity[] {
+    const rect = entity.getRect()
+    const entities: Entity[] = []
+
+    for (let x = rect.posX + rect.width - 1; x >= rect.posX; --x) {
+      for (let y = rect.posY + rect.height - 1; y >= rect.posY; --y) {
+        for (const layer of Object.values(ZoneLayers)) {
+          if (typeof layer !== 'number') {
+            continue
+          }
+          const ent = this.matrix[layer][x]?.[y]
+          if (ent && ent !== entity && ent.spawned && !ent.shouldBeDestroyed) {
+            if (!entities.includes(ent)) {
+              entities.push(ent)
+            }
+          }
+        }
+      }
+    }
+
+    return entities
+  }
+
   /**
    * Проверяет, находится ли по заданным координатам какая-либо ещё сущность.
    * Если да, то совершает над ней необходимые операции
    */
   hasCollisionsWithMatrix(rect: Rect, entity: Entity): boolean {
+    const isNeitherPlayerGhost = (
+      entity: Entity,
+      layerCell: Entity | null
+    ): boolean => {
+      return !(
+        (entity instanceof Player && layerCell instanceof Ghost) ||
+        (entity instanceof Ghost && layerCell instanceof Player)
+      )
+    }
+
+    const isEntityPlayerOrGhost = (entity: Entity): boolean => {
+      return entity instanceof Player || entity instanceof Ghost
+    }
+
+    const isLayerCellBlocked = (
+      layerCell: Entity | null,
+      entity: Entity
+    ): boolean => {
+      return (
+        (layerCell && layerCell !== entity && !layerCell.crossable) || false
+      )
+    }
+
+    const isOnLoose = (layerCell: Entity | null, entity: Entity): boolean => {
+      return (
+        entity instanceof Ghost &&
+        !this.checkGhostAtBase(entity) &&
+        layerCell instanceof Terrain &&
+        layerCell.variant === TerrainType.Gate
+      )
+    }
+
     for (let x = rect.posX + rect.width - 1; x >= rect.posX; --x) {
       for (let y = rect.posY + rect.height - 1; y >= rect.posY; --y) {
-        const mainLayerCell = this.matrix[ZoneLayers.Main][x]?.[y]
-        const bonusLayerCell = this.matrix[ZoneLayers.Bonus][x]?.[y]
+        for (const layer of Object.values(ZoneLayers)) {
+          if (typeof layer !== 'number') {
+            continue
+          }
 
-        if (!mainLayerCell && !bonusLayerCell) {
-          continue
-        }
-        if (entity instanceof Player) {
-          if (
-            mainLayerCell !== null &&
-            mainLayerCell !== entity &&
-            !mainLayerCell.crossable
-          ) {
+          const layerCell = this.matrix[layer][x]?.[y]
+          if (isOnLoose(layerCell, entity)) {
             return true
           }
-          if (bonusLayerCell !== null && entity instanceof Player) {
-            // Клетка с бонусом
+
+          if (
+            isNeitherPlayerGhost(entity, layerCell) &&
+            isEntityPlayerOrGhost(entity) &&
+            isLayerCellBlocked(layerCell, entity)
+          ) {
             return true
           }
         }
@@ -242,10 +454,10 @@ export class Zone {
     )
   }
 
-  /** Проверка на предмет столкновений сущностей и координат, которые выходят за пределы матрицы */
+  /** Проверка на предмет столкновений сущностей и координат */
   hasCollision(rect: Rect, entity: Entity): boolean {
     if (
-      this.isBeyondMatrix(rect) ||
+      //this.isBeyondMatrix(rect) ||
       this.hasCollisionsWithMatrix(rect, entity)
     ) {
       return true

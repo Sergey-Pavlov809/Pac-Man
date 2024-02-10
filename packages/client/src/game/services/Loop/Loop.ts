@@ -2,6 +2,7 @@ import { type Entity } from '../../entities/Entity/Entity'
 import { EntityEvent } from '../../entities/Entity/typings'
 import { type LoopDelays, type LoopIntervals } from './typings'
 import { Player } from '../../entities/Player/Player'
+import { Ghost } from '../../entities/Ghost/Ghost'
 
 export class Loop {
   /** Минимальное время игрового цикла в миллисекундах */
@@ -17,7 +18,7 @@ export class Loop {
   loopIntervals: LoopIntervals = {}
 
   /** Список динамических игровых сущностей */
-  loopEntities: Set<Player> = new Set()
+  loopEntities: Set<Player | Ghost> = new Set()
   /** Запущен ли данный сервис */
   active = false
   lastTimestamp = 0
@@ -88,7 +89,7 @@ export class Loop {
 
   add(entity: Entity): void {
     this.registerTimerHandlers(entity)
-    if (entity instanceof Player) {
+    if (entity instanceof Player || entity instanceof Ghost) {
       this.loopEntities.add(entity)
     }
   }
