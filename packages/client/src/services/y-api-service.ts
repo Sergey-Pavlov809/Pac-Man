@@ -1,10 +1,10 @@
-import { LeaderBoardApi } from './../types/FormApi'
 import {
+  LeaderBoardApi,
   RegistrationFromApi,
   UserFromApi,
   LoginFromApi,
-} from '../types/FormApi'
-import { ratingFieldName } from '../utils/consts'
+} from 'types/FormApi'
+import { ratingFieldName } from 'utils/consts'
 
 export const Y_API_BASE_URL = 'https://ya-praktikum.tech/api/v2'
 

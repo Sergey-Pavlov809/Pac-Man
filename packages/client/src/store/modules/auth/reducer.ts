@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
-import { AUTHORIZATION_STATUS } from '../../../utils/consts'
-import { AuthState, RootState } from '../../types'
-import yApiService from '../../../services/y-api-service'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AUTHORIZATION_STATUS } from 'utils/consts'
+import { AuthState, RootState } from 'store/types'
+import yApiService from 'services/y-api-service'
 import { message } from 'antd'
 
 const initialState: AuthState = {
@@ -13,7 +13,6 @@ const initialState: AuthState = {
   first_name: null,
   second_name: null,
   avatar: null,
-  password: null,
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
 }
 
@@ -21,8 +20,7 @@ export const fetchUserData = createAsyncThunk(
   'auth/fetchUserData',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await yApiService.getUser()
-      return response
+      return await yApiService.getUser()
     } catch (error) {
       message.error(`Ошибка загрузки информации о пользователе: ${error}`)
       return rejectWithValue(error)

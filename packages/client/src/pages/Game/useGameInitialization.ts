@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { setScore } from '../../store/modules/game/reducer'
+import { useAppDispatch, useAppSelector } from 'hooks'
+import { setScore } from 'store/modules/game/reducer'
 
 import { Boundary } from './Boundary'
 import { Player } from './Player'
@@ -10,10 +10,10 @@ import { Pellet } from './Pellet'
 import { Ghost } from './Ghost'
 import { PowerUp } from './Power'
 import { GAME_CONFIG } from './const'
-import { selectAuth } from '../../store/modules/auth/reducer'
-import { postScores } from '../../store/modules/leaderboard/reducer'
+import { selectAuth } from 'store/modules/auth/reducer'
+import { postScores } from 'store/modules/leaderboard/reducer'
 
-export const useGameinitialization = (
+export const useGameInitialization = (
   {
     canvasRef,
     scoreRef,

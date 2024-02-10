@@ -5,9 +5,9 @@ import css from './LeaderBoard.module.css'
 import {
   fetchLeaderBoard,
   selectLeaderBoard,
-} from '../../store/modules/leaderboard/reducer'
-import { useAppDispatch, useAppSelector } from '../../hooks'
-import { ratingFieldName } from '../../utils/consts'
+} from 'store/modules/leaderboard/reducer'
+import { useAppDispatch, useAppSelector } from 'hooks'
+import { ratingFieldName } from 'utils/consts'
 
 const columns = [
   { title: 'Ранг', dataIndex: 'rank', key: 'rank' },

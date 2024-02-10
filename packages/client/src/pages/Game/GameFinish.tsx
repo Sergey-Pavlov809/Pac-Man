@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Button, Typography, Card } from 'antd'
-import { useBrowserNotification, useAppSelector } from '../../hooks'
-import { selectGame } from '../../store/modules/game/reducer'
+import { useBrowserNotification, useAppSelector } from 'hooks'
+import { selectGame } from 'store/modules/game/reducer'
 
 import css from './Game.module.css'
 
