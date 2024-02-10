@@ -26,7 +26,12 @@ async function startServer() {
 
     app.use(vite.middlewares)
   } else {
-    app.use('/assets', express.static(path.resolve('dist/client', 'assets')))
+    app
+      .use('/assets', express.static(path.resolve('dist/client', 'assets')))
+      .use(
+        '/serviceWorker.js',
+        express.static(path.resolve('dist/client', 'serviceWorker.js'))
+      )
   }
 
   app.use('*', async (req, res, next) => {
