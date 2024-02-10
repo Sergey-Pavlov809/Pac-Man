@@ -33,4 +33,4 @@ const app = (
   </Provider>
 )
 
-ReactDOM.createRoot(rootElement).render(app)
+ReactDOM.hydrateRoot(rootElement, app)

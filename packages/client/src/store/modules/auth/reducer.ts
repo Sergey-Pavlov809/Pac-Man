@@ -13,6 +13,7 @@ const initialState: AuthState = {
   first_name: null,
   second_name: null,
   avatar: null,
+  password: null,
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
 }
 
