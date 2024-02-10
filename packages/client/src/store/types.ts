@@ -14,6 +14,7 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+  yandexOAuthId?: string
 }
 
 export interface LeaderBoardState {

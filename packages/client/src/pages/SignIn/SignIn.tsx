@@ -3,6 +3,15 @@ import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
+import yApiService from '../../services/y-api-service'
+import { useEffect } from 'react'
+import { ServiceIdApi } from '../../types/FormApi'
+import {
+  fetchYandexId,
+  loginWithYandex,
+  selectAuth,
+} from '../../store/modules/auth/reducer'
+import { useAppDispatch, useAppSelector } from '../../hooks'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -25,6 +34,20 @@ const SignIn: React.FC = () => {
 
   const navigateToSiguUp = (): void => {
     navigate('/sign-up')
+  }
+
+  const userData = useAppSelector(selectAuth)
+
+  const dispatch = useAppDispatch()
+
+  const oauthLogin = async (): Promise<void> => {
+    await dispatch(fetchYandexId())
+    await dispatch(
+      loginWithYandex({
+        code: String(userData.yandexOAuthId),
+        redirect_uri: 'http://localhost:3000/',
+      })
+    )
   }
 
   return (
@@ -57,6 +80,11 @@ const SignIn: React.FC = () => {
           <Form.Item {...tailFormItemLayout}>
             <Button type="primary" htmlType="submit" block>
               Войти
+            </Button>
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Button type="link" htmlType="submit" block onClick={oauthLogin}>
+              Войти с помощью yandex
             </Button>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>

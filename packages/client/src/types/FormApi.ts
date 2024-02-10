@@ -14,6 +14,15 @@ export type UserFromApi = {
   email: string
 }
 
+export type ServiceIdApi = {
+  service_id: string
+}
+
+export type OauthSignInRequest = {
+  code: string
+  redirect_uri: string
+}
+
 export interface RegistrationFromApi {
   first_name: string
   second_name: string

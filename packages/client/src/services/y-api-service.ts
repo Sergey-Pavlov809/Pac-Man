@@ -1,4 +1,8 @@
-import { LeaderBoardApi } from './../types/FormApi'
+import {
+  LeaderBoardApi,
+  OauthSignInRequest,
+  ServiceIdApi,
+} from './../types/FormApi'
 import {
   RegistrationFromApi,
   UserFromApi,
@@ -39,6 +43,26 @@ const yApiService = {
     }).then(response => response.json())
   },
 
+  getServiceID(): Promise<ServiceIdApi> {
+    return fetch(`${Y_API_BASE_URL}/oauth/yandex/service-id`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    }).then(response => response.json())
+  },
+
+  loginWithYandex(params: OauthSignInRequest): Promise<Response> {
+    return fetch(`${Y_API_BASE_URL}/oauth/yandex`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(params),
+    })
+  },
   getLeaderBoard(): Promise<LeaderBoardApi[]> {
     return fetch(`${Y_API_BASE_URL}/leaderboard/all`, {
       method: 'POST',

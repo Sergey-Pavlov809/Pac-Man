@@ -3,6 +3,7 @@ import { AUTHORIZATION_STATUS } from '../../../utils/consts'
 import { AuthState, RootState } from '../../types'
 import yApiService from '../../../services/y-api-service'
 import { message } from 'antd'
+import { OauthSignInRequest } from '../../../types/FormApi'
 
 const initialState: AuthState = {
   id: null,
@@ -15,6 +16,7 @@ const initialState: AuthState = {
   avatar: null,
   password: null,
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
+  yandexOAuthId: '',
 }
 
 export const fetchUserData = createAsyncThunk(
@@ -25,6 +27,34 @@ export const fetchUserData = createAsyncThunk(
       return response
     } catch (error) {
       message.error(`Ошибка загрузки информации о пользователе: ${error}`)
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const fetchYandexId = createAsyncThunk(
+  'auth/fetchYandexId',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await yApiService.getServiceID()
+      console.log(response)
+      return response
+    } catch (error) {
+      message.error(`Ошибка загрузки информации ServiceID: ${error}`)
+      return rejectWithValue(error)
+    }
+  }
+)
+
+export const loginWithYandex = createAsyncThunk(
+  'auth/loginWithYandex',
+  async (data: OauthSignInRequest, { rejectWithValue }) => {
+    try {
+      const response = await yApiService.loginWithYandex(data)
+      console.log(response)
+      return response
+    } catch (error) {
+      message.error(`Ошибка загрузки информации ServiceID: ${error}`)
       return rejectWithValue(error)
     }
   }
@@ -55,6 +85,9 @@ export const authSlice = createSlice({
     })
     addCase(fetchUserData.rejected, state => {
       state.authorizedStatus = AUTHORIZATION_STATUS.NO_AUTH
+    })
+    addCase(fetchYandexId.fulfilled, (state, { payload }) => {
+      state.yandexOAuthId = payload?.service_id
     })
   },
 })
