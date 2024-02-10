@@ -3,7 +3,7 @@ export const serviceWorkerDEV = import.meta.env.DEV
 import serviceWorkerUrlDEV from '../serviceWorker?url'
 const serviceWorkerUrl = serviceWorkerDEV
   ? serviceWorkerUrlDEV
-  : '/serviceWorker.js'
+  : './serviceWorker.js'
 
 function checkCompatibility(reporting = true): boolean {
   if (!('serviceWorker' in navigator)) {

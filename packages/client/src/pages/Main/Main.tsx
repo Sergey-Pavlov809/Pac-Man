@@ -29,7 +29,7 @@ export const Main: React.FC = () => {
             Играть
           </Button>
         </Flex>
-        {typeof window !== 'undefined' && <Pacman />}
+        <Pacman />
       </div>
       <Row>
         <Col span={2} />

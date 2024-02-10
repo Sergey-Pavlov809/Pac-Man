@@ -35,8 +35,4 @@ const app = (
   </Provider>
 )
 
-if (rootElement.innerHTML !== '<!--ssr-outlet-->') {
-  ReactDOM.createRoot(rootElement).render(app)
-} else {
-  ReactDOM.hydrateRoot(rootElement, app)
-}
+ReactDOM.hydrateRoot(rootElement, app)

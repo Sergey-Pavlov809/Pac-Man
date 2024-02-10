@@ -2,7 +2,7 @@ import { StaticRouter } from 'react-router-dom/server'
 import { renderToString } from 'react-dom/server'
 import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs'
 import { Provider } from 'react-redux'
-import { setupStore } from './src/store'
+import { setupStore } from './store'
 
 import { AuthState } from 'store/types'
 import { AppRouter } from 'config/router'
