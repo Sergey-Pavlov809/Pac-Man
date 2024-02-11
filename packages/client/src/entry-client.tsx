@@ -13,10 +13,9 @@ import { AppRouter } from 'config/router'
 import { store } from 'store/index'
 
 /**
- * Активировать SW будем в production режиме, но для временно для тестов добавляю DEV
+ * Активировать SW будем в production режиме
  */
-if (import.meta.env.PROD || import.meta.env.DEV) {
-  // TODO: при переходе на прод, убрать DEV
+if (import.meta.env.PROD) {
   registerServiceWorker(true)
 } else {
   unregisterServiceWorker(true)

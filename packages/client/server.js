@@ -1,14 +1,14 @@
-import * as dotenv from 'dotenv'
-import * as cors from 'cors'
-import * as express from 'express'
-import * as fs from 'fs'
-import * as path from 'path'
+import dotenv from 'dotenv'
+import cors from 'cors'
+import express from 'express'
+import fs from 'fs'
+import path from 'path'
 
 dotenv.config()
 
 const isDev = process.env.NODE_ENV === 'development'
 
-async function startServer(): Promise<void> {
+async function startServer() {
   const app = express()
   app.use(cors())
   const port = Number(process.env.CLIENT_PORT) || 3000
