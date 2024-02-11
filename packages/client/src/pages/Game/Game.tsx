@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Flex, Typography } from 'antd'
 import { GameCountDown } from '../../components'
-import { useGameCountDown, useFullscreen } from '../../hooks'
+import { useGameCountDown, useFullscreen } from 'hooks'
 
-import { useGameinitialization } from './useGameinitialization'
+import { useGameInitialization } from './useGameInitialization'
 import { GAME_CONFIG } from './const'
 
 import css from './Game.module.css'
@@ -19,7 +19,7 @@ export const Game: React.FC<GameProps> = ({ setFinishStatus }) => {
   const containerRef = React.useRef<HTMLDivElement>(null)
   useFullscreen(containerRef)
 
-  const start = useGameinitialization(
+  const start = useGameInitialization(
     { canvasRef, scoreRef, lifeRef },
     setFinishStatus
   )

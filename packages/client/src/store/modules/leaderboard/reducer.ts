@@ -1,20 +1,22 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import yApiService from '../../../services/y-api-service'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import yApiService from 'services/y-api-service'
 import { message } from 'antd'
-import { LeaderBoardState, RootState } from '../../types'
+import { LeaderBoardState, RootState } from 'store/types'
 
 const initialState: LeaderBoardState = {
   items: [],
+  status: 'idle',
+  error: null,
 }
 
 export const fetchLeaderBoard = createAsyncThunk(
   'leaderboard/fetchLeaderBoard',
-  async _ => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await yApiService.getLeaderBoard()
-      return response
+      return await yApiService.getLeaderBoard()
     } catch (error) {
       message.error(`Ошибка загрузки данных: ${error}`)
+      return rejectWithValue(`Ошибка загрузки данных: ${error}`)
     }
   }
 )
@@ -38,11 +40,22 @@ export const leaderBoardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: ({ addCase }) => {
+    addCase(fetchLeaderBoard.pending, state => {
+      state.status = 'loading'
+      state.error = null
+    })
     addCase(fetchLeaderBoard.fulfilled, (state, { payload }) => {
       state.items =
         payload?.map((item, i) => {
           return { rank: i + 1, key: i, ...item.data }
         }) ?? []
+      state.status = 'succeeded'
+    })
+    addCase(fetchLeaderBoard.rejected, (state, action) => {
+      state.status = 'failed'
+      state.error = action.payload
+        ? String(action.payload)
+        : 'Неизвестная ошибка'
     })
   },
 })

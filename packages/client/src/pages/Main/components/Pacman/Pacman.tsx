@@ -2,7 +2,7 @@ import * as React from 'react'
 import { gsap } from 'gsap'
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 
-import background from '../../../../assets/maze-background.svg'
+import background from 'assets/maze-background.svg'
 import css from './Pacman.module.css'
 
 gsap.registerPlugin(MotionPathPlugin)
@@ -15,7 +15,7 @@ export const Pacman: React.FC = () => {
   const pacmanBottom = React.useRef(null)
 
   const attachAnimation = (): gsap.Context => {
-    const ctx = gsap.context(() => {
+    return gsap.context(() => {
       tl.current = gsap
         .timeline()
         .to(
@@ -56,7 +56,6 @@ export const Pacman: React.FC = () => {
           0
         )
     })
-    return ctx
   }
 
   React.useLayoutEffect(() => {

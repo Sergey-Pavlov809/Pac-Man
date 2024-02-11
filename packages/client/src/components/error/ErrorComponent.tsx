@@ -1,5 +1,4 @@
 import React from 'react'
-import { useRouteError } from 'react-router-dom'
 import GhostSvg from './GhostSvg'
 import FourSvg from './FourSvg'
 import ZeroSvg from './ZeroSvg'
@@ -21,8 +20,8 @@ export const ErrorComponent: React.FC<ErrorProps> = ({
   const FirstDigit = type === '404' ? FourSvg : FiveSvg
   const SecondDigit = type === '404' ? FourSvg : ZeroSvg
 
-  const error = useRouteError()
-  const errorFromRouter = error ? String(error) : 'Произошла неизвестная ошибка'
+  const defaultMessage =
+    type === '404' ? 'Страница не найдена' : 'Произошла неизвестная ошибка'
   const { token } = theme.useToken()
 
   return (
@@ -73,7 +72,7 @@ export const ErrorComponent: React.FC<ErrorProps> = ({
       </ConfigProvider>
       <Title style={{ marginTop: 20 }}>OOOOOPS!!</Title>
       <Title level={2} type="danger" style={{ marginTop: 40 }}>
-        {message || errorFromRouter}
+        {message || defaultMessage}
       </Title>
     </Flex>
   )

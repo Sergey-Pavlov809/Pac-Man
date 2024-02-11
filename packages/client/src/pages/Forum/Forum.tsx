@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { FC, useEffect, useState } from 'react'
 
 import css from './Forum.module.css'
-import { ForumApi, ITopic } from '../../services'
-import { AddTopicModal } from '../../components'
-import { getHumanReadableDate } from '../../utils/getHumanReadableDate'
+import { ForumApi, ITopic } from 'services/index'
+import { AddTopicModal } from 'components/AddTopicModal'
+import { getHumanReadableDate } from 'utils/getHumanReadableDate'
 
 const { Title } = Typography
 

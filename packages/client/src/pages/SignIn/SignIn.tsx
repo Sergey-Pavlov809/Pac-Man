@@ -3,15 +3,6 @@ import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { Link, useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
-import yApiService from '../../services/y-api-service'
-import { useEffect } from 'react'
-import { ServiceIdApi } from '../../types/FormApi'
-import {
-  fetchYandexId,
-  loginWithYandex,
-  selectAuth,
-} from '../../store/modules/auth/reducer'
-import { useAppDispatch, useAppSelector } from '../../hooks'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -26,7 +17,7 @@ const tailFormItemLayout = {
   },
 }
 
-const SignIn: React.FC = () => {
+export const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
@@ -85,5 +76,3 @@ const SignIn: React.FC = () => {
     </Flex>
   )
 }
-
-export default SignIn
