@@ -1,19 +1,11 @@
-import { serviceWorkerDEV } from 'utils/serviceWorkerUtils'
-
 const serviceWorker = self as unknown as ServiceWorkerGlobalScope // чтобы не ругался тайпскрипт
-
-/** TODO: Для тестирования в DEV режиме, после можно убрать **/
-const preUrl = serviceWorkerDEV ? '/src' : ''
 
 /** TODO: Временно для тестирования выведем логи в консоль **/
 const REPORTING = true
 
 const CACHE_NAME = 'pacman-cache-1'
 // Импорты в SW картинок из assets
-const GAME_ASSETS = [
-  preUrl + '/assets/defaultAvatar.png',
-  preUrl + '/assets/maze-background.svg',
-]
+const GAME_ASSETS = ['/assets/defaultAvatar.png', '/assets/maze-background.svg']
 const PRECACHE_URLS = [
   '/',
   '/index.html',

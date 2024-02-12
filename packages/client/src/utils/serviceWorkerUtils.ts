@@ -1,10 +1,3 @@
-/** TODO: временно для проверки в DEV режиме, после можно убрать **/
-export const serviceWorkerDEV = import.meta.env.DEV
-import serviceWorkerUrlDEV from '../serviceWorker?url'
-const serviceWorkerUrl = serviceWorkerDEV
-  ? serviceWorkerUrlDEV
-  : '/serviceWorker.js'
-
 function checkCompatibility(reporting = true): boolean {
   if (!('serviceWorker' in navigator)) {
     reporting && console.warn('ServiceWorker is not supported')
@@ -22,7 +15,7 @@ export function registerServiceWorker(reporting = true): void {
     return
   }
   navigator.serviceWorker
-    .register(serviceWorkerUrl)
+    .register('/serviceWorker.js')
     .then(registration => {
       reporting &&
         console.log(

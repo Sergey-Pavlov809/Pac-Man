@@ -36,12 +36,19 @@ export default defineConfig({
       },
       output: {
         entryFileNames: assetInfo => {
-          return assetInfo.name === 'serviceWorker'
-            ? '[name].js' // put service worker in root
-            : 'assets/js/[name]-[hash].js' // others in `assets/js/`
+          if (assetInfo.name === 'serviceWorker') {
+            return '[name].js'
+          }
+          if (assetInfo.name === 'entry-server') {
+            return 'entry-server.js'
+          }
+          return 'assets/js/[name]-[hash].js'
         },
         assetFileNames: `assets/[name].[ext]`,
       },
     },
+  },
+  ssr: {
+    noExternal: ['gsap'],
   },
 })
