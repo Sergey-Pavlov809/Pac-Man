@@ -1,6 +1,6 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
-import { loginValidationSchema } from 'utils/ruleSchemes'
-import { useNavigate } from 'react-router-dom'
+import { loginValidationSchema } from '../../utils/ruleSchemes'
+import { Link, useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
 
@@ -21,7 +21,7 @@ export const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
-  const { login } = useSignIn()
+  const { login, yandexOAuthUrl } = useSignIn()
 
   const navigateToSiguUp = (): void => {
     navigate('/sign-up')
@@ -58,6 +58,9 @@ export const SignIn: React.FC = () => {
             <Button type="primary" htmlType="submit" block>
               Войти
             </Button>
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
+            <Link to={yandexOAuthUrl}>Войти с помощью yandex</Link>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
             <Button
