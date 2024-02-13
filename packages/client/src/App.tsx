@@ -12,6 +12,7 @@ function App(): JSX.Element {
 
     fetchServerData()
   }, [])
+
   return <div className="App">Вот тут будет жить ваше приложение :)</div>
 }
 
