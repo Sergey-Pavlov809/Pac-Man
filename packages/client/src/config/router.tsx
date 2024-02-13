@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import { AppLayout } from '../components'
 import {
@@ -15,10 +15,24 @@ import {
 } from '../pages'
 import App from '../App'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { routes } from 'config/routes'
+import yApiService from 'services/y-api-service'
 
 export const AppRouter: React.FC = () => {
+  const navigate = useNavigate()
+
+  const checkUserAuth = async (): Promise<void> => {
+    const res = await yApiService.getUser()
+    if (!res?.login) {
+      navigate('/sign-in')
+    }
+  }
+
+  useEffect(() => {
+    checkUserAuth()
+  }, [])
+
   return (
     <Routes>
       <Route element={<AppLayout />} errorElement={<ServerErrorPage />}>

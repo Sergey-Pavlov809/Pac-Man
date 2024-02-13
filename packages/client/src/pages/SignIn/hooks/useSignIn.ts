@@ -8,6 +8,7 @@ import {
   selectAuth,
 } from '../../../store/modules/auth/reducer'
 import { redirectUrl } from './constants'
+import { useNavigate } from 'react-router-dom'
 
 interface useSignIn {
   isLogin: boolean
@@ -20,6 +21,8 @@ const useSignIn = (): useSignIn => {
 
   const dispatch = useAppDispatch()
 
+  const navigate = useNavigate()
+
   const { yandexOAuthId } = useAppSelector(selectAuth)
 
   const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${redirectUrl}`
@@ -31,6 +34,7 @@ const useSignIn = (): useSignIn => {
       setIsLogin(true)
       console.log('Result login', response)
       await checkUserAuth()
+      navigateToApp()
     } catch (error) {
       console.log('Error login', error)
     }
@@ -42,6 +46,7 @@ const useSignIn = (): useSignIn => {
 
   const checkUserAuth = async (): Promise<void> => {
     await yApiService.getUser()
+    navigate('/')
   }
 
   return {
