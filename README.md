@@ -64,6 +64,10 @@
 
 ## Production окружение в докере
 
+Приложение собирается в docker контейнере
+
+![alt text](image.png)
+
 Перед первым запуском выполните `node init.js`
 
 `docker compose up` - запустит три сервиса
