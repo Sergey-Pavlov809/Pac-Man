@@ -8,7 +8,7 @@ import {
 } from 'types/FormApi'
 import { ratingFieldName } from 'utils/consts'
 
-export const Y_API_BASE_URL = 'https://ya-praktikum.tech/api/v2'
+export const Y_API_BASE_URL = `${import.meta.env.VITE_API_ENDPOINT}/api/v2`
 
 const yApiService = {
   login(userData: LoginFromApi): Promise<Response> {
