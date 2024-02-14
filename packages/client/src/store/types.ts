@@ -1,5 +1,5 @@
 import { store } from './index'
-import { LeaderBoardItem } from 'types/FormApi'
+import { LeaderBoardItem, UserTheme } from 'types/FormApi'
 
 export interface AuthState {
   id: number | null
@@ -17,6 +17,12 @@ export interface AuthState {
 
 export interface LeaderBoardState {
   items: LeaderBoardItem[] | []
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
+}
+
+export interface ThemeState {
+  userTheme: UserTheme
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: string | null
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Menu, Layout, MenuProps } from 'antd'
+import { Menu, Layout, MenuProps, theme } from 'antd'
 import { Link, useLocation } from 'react-router-dom'
 import { routes } from 'config/routes'
 import { isAuthenticated } from 'pages/Profile/utils'
@@ -43,8 +43,9 @@ const items: MenuProps['items'] = [
 
 export const Header: React.FC = () => {
   const location = useLocation()
+  const { token } = theme.useToken()
   return (
-    <AntHeader style={{ backgroundColor: 'white' }}>
+    <AntHeader style={{ backgroundColor: token.colorBgContainer }}>
       <Menu
         selectedKeys={[location.pathname]}
         mode="horizontal"
