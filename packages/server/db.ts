@@ -25,17 +25,26 @@ const sequelizeOptions: SequelizeOptions = {
 }
 const sequelize = new Sequelize(sequelizeOptions)
 
+const indexes = [
+  {
+    fields: ['theme_id'],
+    unique: false,
+  },
+]
+
 export const ForumTheme = sequelize.define('ForumTheme', forum_theme, {
   updatedAt: false,
 })
 export const ForumMessage = sequelize.define('ForumMessage', forum_message, {
   updatedAt: false,
+  indexes,
 })
 export const ForumMessageReaction = sequelize.define(
   'ForumMessageReaction',
   forum_reaction,
   {
     timestamps: false,
+    indexes,
   }
 )
 
