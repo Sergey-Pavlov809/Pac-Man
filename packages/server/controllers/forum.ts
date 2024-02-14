@@ -86,6 +86,8 @@ export const Forum = {
   },
   postMessage: async (req: Request, res: Response): Promise<void> => {
     try {
+      const theme_id = +req.body.theme_id
+
       // eslint-disable-next-line no-unsafe-optional-chaining
       const { display_name, avatar, id } = req?.body?.user
       const messageData = {
@@ -93,9 +95,9 @@ export const Forum = {
         user_id: id,
         user_display_name: display_name,
         user_avatar: avatar,
+        theme_id,
       }
       await ForumMessage.create({ ...messageData })
-      const theme_id = +req.body.theme_id
       const themes = await ForumMessage.findAll({ where: { theme_id } })
       res.status(200).json({ data: themes })
     } catch (error) {
