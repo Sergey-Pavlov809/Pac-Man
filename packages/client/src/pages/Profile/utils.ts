@@ -22,7 +22,7 @@ export const fieldStyle = {
 
 export const isAuthenticated = true
 
-export const baseApi = 'https://ya-praktikum.tech/api/v2'
+export const baseApi = `${import.meta.env.VITE_API_ENDPOINT}/api/v2`
 
 export const passwordValidator: Rule[] = [
   { required: true, message: 'Это обязательное поле' },
