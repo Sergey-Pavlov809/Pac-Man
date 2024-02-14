@@ -1,8 +1,7 @@
 import {
   CreateCommentPayload,
   CreateTopicPayload,
-  ForumComment,
-  RemoveTopicByIdPayload,
+  TopicIdPayload,
 } from 'types/ForumApi'
 
 export class ForumApi {
@@ -15,19 +14,18 @@ export class ForumApi {
     })
   }
 
-  async removeTopicById(values: RemoveTopicByIdPayload): Promise<Response> {
+  async removeTopicById(values: TopicIdPayload): Promise<Response> {
     return fetch(`${ForumApi.API}/themes/${values.theme_id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ user: values.user }),
     })
   }
 
-  async getTopicComments(themeId: number): Promise<Response> {
-    return fetch(`${ForumApi.API}/messages/${themeId}`, {
+  async getTopicComments({ theme_id }: TopicIdPayload): Promise<Response> {
+    return fetch(`${ForumApi.API}/messages/${theme_id}`, {
       method: 'GET',
       credentials: 'include',
     })

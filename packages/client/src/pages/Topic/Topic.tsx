@@ -31,16 +31,14 @@ import {
 } from 'store/modules/forum/reducer'
 
 import css from './Topic.module.css'
-import { selectAuth } from 'store/modules/auth/reducer'
 
 export const Topic: React.FC = () => {
   const params = useParams()
-  const topicId = Number(params.forumId)
+  const theme_id = Number(params.forumId)
 
-  const topic = useAppSelector(selectTopicById(topicId))
+  const topic = useAppSelector(selectTopicById(theme_id))
   const isTopicLoading = useAppSelector(selectForum).topicsStatus === 'loading'
-  const comments = useAppSelector(selectCommentsByTopicId(topicId))
-  const { id, display_name, avatar } = useAppSelector(selectAuth)
+  const comments = useAppSelector(selectCommentsByTopicId(theme_id))
 
   const dispatch = useAppDispatch()
 
@@ -48,19 +46,14 @@ export const Topic: React.FC = () => {
 
   React.useEffect(() => {
     dispatch(getTopics())
-    dispatch(getTopicComments(topicId))
-  }, [dispatch, topicId])
+    dispatch(getTopicComments({ theme_id }))
+  }, [dispatch, theme_id])
 
   const addComment = ({ message }: { message: string }): void => {
     dispatch(
       postComment({
         message: message.trim(),
-        user: {
-          avatar,
-          display_name: display_name ?? 'Anonymous',
-        },
-        user_id: id,
-        theme_id: topicId,
+        theme_id,
       })
     )
     form.resetFields()
@@ -96,6 +89,7 @@ export const Topic: React.FC = () => {
           <ForumTopic {...topic} extra={false} />
           <List
             dataSource={comments}
+            locale={{ emptyText: 'Здесь еще ни одного комментария' }}
             renderItem={({
               user_display_name,
               message,

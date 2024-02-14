@@ -15,26 +15,10 @@ export interface ForumComment {
   user_id: number
 }
 
-type UserInfoPayload = {
-  user: { id: number | null }
-}
-
-export type RemoveTopicByIdPayload = {
+export type TopicIdPayload = {
   theme_id: ForumTopic['id']
-} & UserInfoPayload
-
-export type GetTopicCommentsPayload = ForumTopic['id']
-
-export type CreateTopicPayload = Omit<ForumTopic, 'id' | 'user_id'> &
-  UserInfoPayload
-
-export type CreateCommentPayload = Pick<
-  ForumComment,
-  'message' | 'theme_id'
-> & {
-  user: {
-    avatar: string | null
-    display_name: string | null
-  }
-  user_id: number | null
 }
+
+export type CreateTopicPayload = Omit<ForumTopic, 'id' | 'user_id'>
+
+export type CreateCommentPayload = Pick<ForumComment, 'message' | 'theme_id'>

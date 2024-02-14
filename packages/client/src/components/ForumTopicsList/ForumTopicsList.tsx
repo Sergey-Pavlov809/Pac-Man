@@ -20,9 +20,6 @@ export const ForumTopicsList: React.FC = () => {
         dispatch(
           removeTopicById({
             theme_id: topicId,
-            user: {
-              id: userId,
-            },
           })
         )
           .unwrap()
@@ -56,7 +53,6 @@ export const ForumTopicsList: React.FC = () => {
   if (topics.length !== 0) {
     return topics.map(({ id, title, body, user_id }) => {
       const isRemovable = userId === user_id
-
       return (
         <ForumTopic
           key={id}

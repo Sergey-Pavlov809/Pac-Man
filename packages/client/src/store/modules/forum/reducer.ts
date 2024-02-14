@@ -7,8 +7,7 @@ import {
   CreateTopicPayload,
   ForumComment,
   ForumTopic,
-  GetTopicCommentsPayload,
-  RemoveTopicByIdPayload,
+  TopicIdPayload,
 } from 'types/ForumApi'
 
 const initialState: ForumState = {
@@ -44,7 +43,6 @@ export const postTopic = createAsyncThunk(
       const response = await new ForumApi().createTopic({
         title: payload.title.trim(),
         body: payload.body.trim(),
-        user: payload.user,
       })
       if (!response.ok) {
         return rejectWithValue(response.status)
@@ -59,7 +57,7 @@ export const postTopic = createAsyncThunk(
 
 export const removeTopicById = createAsyncThunk(
   'forum/removeTopicById',
-  async (payload: RemoveTopicByIdPayload, { rejectWithValue }) => {
+  async (payload: TopicIdPayload, { rejectWithValue }) => {
     try {
       const response = await new ForumApi().removeTopicById(payload)
       if (!response.ok) {
@@ -75,7 +73,7 @@ export const removeTopicById = createAsyncThunk(
 
 export const getTopicComments = createAsyncThunk(
   'forum/getTopicComments',
-  async (payload: GetTopicCommentsPayload, { rejectWithValue }) => {
+  async (payload: TopicIdPayload, { rejectWithValue }) => {
     try {
       const response = await new ForumApi().getTopicComments(payload)
       if (!response.ok) {

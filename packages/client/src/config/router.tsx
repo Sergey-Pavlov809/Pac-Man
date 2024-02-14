@@ -17,16 +17,9 @@ import App from '../App'
 
 import React from 'react'
 import { routes } from 'config/routes'
-import { useAppDispatch } from 'hooks'
-import { fetchUserData } from 'store/modules/auth/reducer'
+import yApiService from 'services/y-api-service'
 
 export const AppRouter: React.FC = () => {
-  const dispatch = useAppDispatch()
-
-  React.useEffect(() => {
-    dispatch(fetchUserData())
-  }, [dispatch])
-
   return (
     <Routes>
       <Route element={<AppLayout />} errorElement={<ServerErrorPage />}>
