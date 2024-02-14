@@ -1,8 +1,4 @@
-import {
-  combineReducers,
-  configureStore,
-  EnhancedStore,
-} from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import authReducer from './modules/auth/reducer'
 import gameReducer from './modules/game/reducer'
 import leaderBoardReducer from './modules/leaderboard/reducer'
@@ -31,10 +27,3 @@ export const store = configureStore({
   reducer: rootReducer,
   preloadedState,
 })
-
-export const createStore = (initialState = preloadedState): EnhancedStore => {
-  return configureStore({
-    reducer: rootReducer,
-    preloadedState: initialState,
-  })
-}

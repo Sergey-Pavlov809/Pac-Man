@@ -7,8 +7,6 @@ import css from './Pacman.module.css'
 
 gsap.registerPlugin(MotionPathPlugin)
 
-const isBrowser = typeof window !== `undefined`
-
 export const Pacman: React.FC = () => {
   const tl = React.useRef<gsap.core.Timeline>()
   const tlProgress = React.useRef<number | undefined>(0)
@@ -60,11 +58,10 @@ export const Pacman: React.FC = () => {
     })
   }
 
-  React.useEffect(() => {
-    if (isBrowser) {
-      attachAnimation()
-    }
-  }, [attachAnimation])
+  React.useLayoutEffect(() => {
+    const ctx = attachAnimation()
+    return () => ctx.revert()
+  }, [])
 
   React.useEffect(() => {
     let ctx: gsap.Context
@@ -78,15 +75,10 @@ export const Pacman: React.FC = () => {
       }
     }
 
-    if (isBrowser) {
-      window.addEventListener('resize', restartAnimation)
-    }
-
+    window.addEventListener('resize', restartAnimation)
     return () => {
-      if (isBrowser) {
-        window.removeEventListener('resize', restartAnimation)
-        ctx?.revert()
-      }
+      window.removeEventListener('resize', restartAnimation)
+      ctx?.revert()
     }
   }, [])
 

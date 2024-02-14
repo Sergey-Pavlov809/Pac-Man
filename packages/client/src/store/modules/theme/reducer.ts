@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { message } from 'antd'
 import { ThemeState, RootState } from 'store/types'
 import { UserTheme } from 'types/FormApi'
 
@@ -16,7 +15,6 @@ export const fetchTheme = createAsyncThunk(
       const theme: 'light' | 'dark' = 'light'
       return Promise.resolve(theme) //await backendService.getUserTheme(userId)
     } catch (error) {
-      message.error(`Ошибка загрузки данных: ${error}`)
       return rejectWithValue(`Ошибка загрузки данных: ${error}`)
     }
   }
