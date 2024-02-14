@@ -6,82 +6,127 @@ import {
   Form,
   Input,
   List,
+  Row,
+  Col,
+  Empty,
   Typography,
+  Skeleton,
 } from 'antd'
-import { useEffect, useState, JSX } from 'react'
-import { useLocation } from 'react-router-dom'
+import * as React from 'react'
+import { useParams } from 'react-router-dom'
 
 import defaultAvatar from 'assets/defaultAvatar.png'
-import { ForumApi, IComment, ITopic } from 'services/index'
-import css from './Topic.module.css'
 import { getHumanReadableDate } from 'utils/getHumanReadableDate'
+import { useAppDispatch, useAppSelector } from 'hooks'
+import {
+  selectCommentsByTopicId,
+  selectTopicById,
+} from 'store/modules/forum/selectors'
+import { ForumTopic } from 'components/ForumTopic'
+import {
+  getTopicComments,
+  getTopics,
+  postComment,
+  selectForum,
+} from 'store/modules/forum/reducer'
 
-const { Title, Text } = Typography
+import css from './Topic.module.css'
+import { selectAuth } from 'store/modules/auth/reducer'
 
-export function Topic(): JSX.Element {
-  const { pathname } = useLocation()
-  const path = pathname.split('/')
-  const topicId = path[path.length - 1]
+export const Topic: React.FC = () => {
+  const params = useParams()
+  const topicId = Number(params.forumId)
+
+  const topic = useAppSelector(selectTopicById(topicId))
+  const isTopicLoading = useAppSelector(selectForum).topicsStatus === 'loading'
+  const comments = useAppSelector(selectCommentsByTopicId(topicId))
+  const { id, display_name, avatar } = useAppSelector(selectAuth)
+
+  const dispatch = useAppDispatch()
+
   const [form] = Form.useForm()
-  const [topic, setTopic] = useState<ITopic | null>(null)
-  const [comments, setComments] = useState<IComment[]>([])
-  const forumApi = new ForumApi()
-  const loadData = async (): Promise<void> => {
-    const topic = await forumApi.getTopicById(Number(topicId))
-    const comments = await forumApi.getComments()
 
-    setTopic(topic)
-    setComments(comments)
-  }
-  const addComment = ({ comment }: { comment: string }): void => {
-    setComments(comments => [
-      ...comments,
-      {
-        id: comments.length,
-        createdAt: new Date().toDateString(),
-        content: comment,
+  React.useEffect(() => {
+    dispatch(getTopics())
+    dispatch(getTopicComments(topicId))
+  }, [dispatch, topicId])
+
+  const addComment = ({ message }: { message: string }): void => {
+    dispatch(
+      postComment({
+        message: message.trim(),
         user: {
-          username: `Test user ${comments.length}`,
+          avatar,
+          display_name: display_name ?? 'Anonymous',
         },
-      },
-    ])
+        user_id: id,
+        theme_id: topicId,
+      })
+    )
     form.resetFields()
   }
 
-  useEffect(() => {
-    loadData().then()
-  }, [])
+  if (isTopicLoading) {
+    return (
+      <Row>
+        <Col span={4} />
+        <Col span={18}>
+          <Skeleton />
+        </Col>
+        <Col span={4} />
+      </Row>
+    )
+  }
+
+  if (!topic) {
+    return (
+      <Empty
+        description={
+          <Typography.Text>Похоже, здесь ничего нет</Typography.Text>
+        }
+      />
+    )
+  }
 
   return (
-    <Flex className={css.topic} vertical={true}>
-      <Title level={2}>{topic?.title}</Title>
-      <Text className={css.topicContent}>{topic?.content}</Text>
-      <List
-        dataSource={comments}
-        renderItem={({ user, content, createdAt }): JSX.Element => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={defaultAvatar} />}
-              title={user.username}
-              description={content}
-            />
-            <p>{getHumanReadableDate(createdAt)}</p>
-          </List.Item>
-        )}
-      />
-      <Divider />
-      <Form form={form} className={css.form} onFinish={addComment}>
-        <Form.Item
-          name="comment"
-          rules={[{ required: true, message: 'Введите комментарий' }]}>
-          <Input.TextArea placeholder="Введите комментарий" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Отправить
-          </Button>
-        </Form.Item>
-      </Form>
-    </Flex>
+    <Row>
+      <Col span={4} />
+      <Col span={18}>
+        <Flex className={css.topic} vertical={true}>
+          <ForumTopic {...topic} extra={false} />
+          <List
+            dataSource={comments}
+            renderItem={({
+              user_display_name,
+              message,
+              createdAt,
+            }): React.ReactNode => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<Avatar src={defaultAvatar} />}
+                  title={user_display_name}
+                  description={message}
+                />
+                <p>{getHumanReadableDate(createdAt)}</p>
+              </List.Item>
+            )}
+          />
+          <Divider />
+          <Form form={form} className={css.form} onFinish={addComment}>
+            <Form.Item
+              name="message"
+              rules={[{ required: true, message: 'Введите комментарий' }]}>
+              <Input.TextArea placeholder="Введите комментарий" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Отправить
+              </Button>
+            </Form.Item>
+          </Form>
+        </Flex>
+      </Col>
+      <Col span={4} />
+    </Row>
   )
 }
