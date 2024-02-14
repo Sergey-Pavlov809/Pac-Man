@@ -23,6 +23,10 @@ export const SignUp: React.FC = () => {
 
   const navigate = useNavigate()
 
+  const navigateToApp = (): void => {
+    navigate('/')
+  }
+
   const onFinish = async (values: RegistrationFromApi): Promise<void> => {
     console.log('Received values of form: ', values)
     try {
