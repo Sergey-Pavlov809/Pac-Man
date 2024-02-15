@@ -88,4 +88,7 @@ docker compose up postgres
 
 
 
+### Локальная разработка
+`docker compose up postres` - запустит  БД
+`yarn dev` - запустит фронтенд + бекенд
 
