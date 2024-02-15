@@ -29,6 +29,7 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  envDir: '../../',
   build: {
     rollupOptions: {
       input: {
