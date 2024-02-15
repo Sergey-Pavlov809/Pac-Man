@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import { AppLayout } from '../components'
 import {
@@ -15,9 +15,7 @@ import {
 } from '../pages'
 import App from '../App'
 
-import React, { useEffect } from 'react'
 import { routes } from 'config/routes'
-import yApiService from 'services/y-api-service'
 
 export const AppRouter: React.FC = () => {
   return (

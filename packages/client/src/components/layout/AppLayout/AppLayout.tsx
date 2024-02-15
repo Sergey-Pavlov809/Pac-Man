@@ -4,6 +4,7 @@ import { Outlet } from 'react-router'
 
 import { Footer, Header } from '..'
 import css from './AppLayout.module.css'
+import ThemeSwitchComponent from 'components/theme-switcher/ThemeSwitchComponent'
 
 type AppLayoutProps = {
   disableHeader?: boolean
@@ -18,5 +19,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <Outlet />
     </Layout.Content>
     <Footer />
+    <ThemeSwitchComponent />
   </Layout>
 )

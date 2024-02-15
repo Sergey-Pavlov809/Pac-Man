@@ -1,6 +1,6 @@
 import { ForumComment, ForumTopic } from 'types/ForumApi'
 import { store } from './index'
-import { LeaderBoardItem } from 'types/FormApi'
+import { LeaderBoardItem, UserTheme } from 'types/FormApi'
 
 export interface AuthState {
   id: number | null
@@ -24,6 +24,12 @@ export interface LeaderBoardState {
   error: string | null
 }
 
+export interface ThemeState {
+  userTheme: UserTheme
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
+}  
+  
 export interface ForumState {
   topics: Array<ForumTopic>
   topicsStatus: AsyncStatus

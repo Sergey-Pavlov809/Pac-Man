@@ -97,4 +97,7 @@ export const { setAvatar } = authSlice.actions
 
 export const selectAuth = (state: RootState): AuthState => state.auth
 
+// Селектор для получения id пользователя
+export const getId = (state: RootState): number | null => selectAuth(state).id
+
 export default authReducer

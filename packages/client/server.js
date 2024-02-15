@@ -3,6 +3,7 @@ import cors from 'cors'
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
@@ -10,6 +11,7 @@ const isDev = process.env.NODE_ENV === 'development'
 
 async function startServer() {
   const app = express()
+  app.use(cookieParser())
   app.use(cors())
   const port = Number(process.env.CLIENT_PORT) || 3000
 
@@ -53,7 +55,11 @@ async function startServer() {
         render = (await vite.ssrLoadModule('src/entry-server.tsx')).render
       }
 
-      const { initialStore, renderResult, styleText } = await render(url)
+      const themeCookie = req.cookies['theme']
+      const { initialStore, renderResult, styleText } = await render(
+        url,
+        themeCookie
+      )
 
       template = template.replace('<!--ssr-outlet-->', renderResult)
       template = template.replace('<!--ssr-styles -->', styleText)
