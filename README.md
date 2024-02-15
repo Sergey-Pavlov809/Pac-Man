@@ -79,3 +79,8 @@
 https://www.loom.com/share/e7d5a06d507e4d6c855f42b66f98f555
 https://www.loom.com/share/1bff9e3a03a947369d874ca2015b87aa
 
+
+### Локальная разработка
+`docker compose up postres` - запустит  БД
+`yarn dev` - запустит фронтенд + бекенд
+
