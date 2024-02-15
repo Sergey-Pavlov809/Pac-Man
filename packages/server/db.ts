@@ -44,7 +44,6 @@ export const ForumMessageReaction = sequelize.define(
   forum_reaction,
   {
     timestamps: false,
-    indexes,
   }
 )
 
