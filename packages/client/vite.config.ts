@@ -50,7 +50,6 @@ export default defineConfig({
       },
     },
   },
-  envDir: '../../',
   ssr: {
     noExternal: ['gsap'],
   },
