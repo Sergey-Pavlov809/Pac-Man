@@ -12,6 +12,7 @@ export default defineConfig({
   },
   define: {
     __SERVER_PORT__: process.env.SERVER_PORT,
+    API: process.env.VITE_ENV,
     contributors: packageJson.contributors,
   },
   resolve: {
@@ -48,6 +49,7 @@ export default defineConfig({
       },
     },
   },
+  envDir: '../../',
   ssr: {
     noExternal: ['gsap'],
   },

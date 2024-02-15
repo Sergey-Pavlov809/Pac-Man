@@ -1,6 +1,5 @@
 // TODO: change to date-fns getHumanReadableDate
 export const getHumanReadableDate = (time: string): string => {
-  console.log(time)
   const messageDate = new Date(Date.parse(time))
   const now = new Date(Date.now())
 

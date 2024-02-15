@@ -1,3 +1,4 @@
+import { ForumComment, ForumTopic } from 'types/ForumApi'
 import { store } from './index'
 import { LeaderBoardItem } from 'types/FormApi'
 
@@ -15,10 +16,21 @@ export interface AuthState {
   yandexOAuthId?: string
 }
 
+type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
+
 export interface LeaderBoardState {
   items: LeaderBoardItem[] | []
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  status: AsyncStatus
   error: string | null
+}
+
+export interface ForumState {
+  topics: Array<ForumTopic>
+  topicsStatus: AsyncStatus
+  createTopicStatus: AsyncStatus
+  removeTopicStatus: AsyncStatus
+  comments: Array<ForumComment>
+  commentsStatus: AsyncStatus
 }
 
 export type RootState = ReturnType<typeof store.getState>
