@@ -1,5 +1,6 @@
 .topic {
   padding: 10px 10px 0;
+  height: 100%;
 }
 
 .topicContent {
@@ -8,4 +9,10 @@
 
 .form {
   margin-top: auto;
+}
+
+.scrollable {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding-inline: 10px;
 }

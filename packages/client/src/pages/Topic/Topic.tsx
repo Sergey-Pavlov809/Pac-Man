@@ -17,7 +17,11 @@ import { useParams } from 'react-router-dom'
 
 import defaultAvatar from 'assets/defaultAvatar.png'
 import { getHumanReadableDate } from 'utils/getHumanReadableDate'
-import { useAppDispatch, useAppSelector } from 'hooks'
+import {
+  useAppDispatch,
+  useAppSelector,
+  useIsomorphicLayoutEffect,
+} from 'hooks'
 import {
   selectCommentsByTopicId,
   selectTopicById,
@@ -35,6 +39,7 @@ import css from './Topic.module.css'
 export const Topic: React.FC = () => {
   const params = useParams()
   const theme_id = Number(params.forumId)
+  const scrollableRef = React.useRef<HTMLDivElement | null>(null)
 
   const topic = useAppSelector(selectTopicById(theme_id))
   const isTopicLoading = useAppSelector(selectForum).topicsStatus === 'loading'
@@ -48,6 +53,14 @@ export const Topic: React.FC = () => {
     dispatch(getTopics())
     dispatch(getTopicComments({ theme_id }))
   }, [dispatch, theme_id])
+
+  useIsomorphicLayoutEffect(() => {
+    scrollableRef.current?.scrollTo({
+      left: 0,
+      top: scrollableRef.current?.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [comments])
 
   const addComment = ({ message }: { message: string }): void => {
     dispatch(
@@ -82,29 +95,31 @@ export const Topic: React.FC = () => {
   }
 
   return (
-    <Row>
+    <Row style={{ height: '100%' }}>
       <Col span={4} />
-      <Col span={18}>
+      <Col span={18} style={{ height: '100%' }}>
         <Flex className={css.topic} vertical={true}>
           <ForumTopic {...topic} extra={false} />
-          <List
-            dataSource={comments}
-            locale={{ emptyText: 'Здесь еще ни одного комментария' }}
-            renderItem={({
-              user_display_name,
-              message,
-              createdAt,
-            }): React.ReactNode => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<Avatar src={defaultAvatar} />}
-                  title={user_display_name}
-                  description={message}
-                />
-                <p>{getHumanReadableDate(createdAt)}</p>
-              </List.Item>
-            )}
-          />
+          <div ref={scrollableRef} className={css.scrollable}>
+            <List
+              dataSource={comments}
+              locale={{ emptyText: 'Здесь еще ни одного комментария' }}
+              renderItem={({
+                user_display_name,
+                message,
+                createdAt,
+              }): React.ReactNode => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={defaultAvatar} />}
+                    title={user_display_name}
+                    description={message}
+                  />
+                  <p>{getHumanReadableDate(createdAt)}</p>
+                </List.Item>
+              )}
+            />
+          </div>
           <Divider />
           <Form form={form} className={css.form} onFinish={addComment}>
             <Form.Item
