@@ -1,0 +1,8 @@
+.emoji {
+  display: inline-block;
+  min-width: 40px;
+  font-size: 12px;
+  border: 1px solid rgb(49, 49, 49);
+  border-radius: 100vw;
+  text-align: center;
+}
