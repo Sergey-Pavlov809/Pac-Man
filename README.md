@@ -77,4 +77,5 @@
 
 Демо работы за 7 и 8 спринты
 https://www.loom.com/share/e7d5a06d507e4d6c855f42b66f98f555
+https://www.loom.com/share/1bff9e3a03a947369d874ca2015b87aa
 
