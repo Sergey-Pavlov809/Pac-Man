@@ -4,9 +4,11 @@ import {
   RegistrationFromApi,
   UserFromApi,
   LoginFromApi,
-  ServiceIdApi,
-} from 'types/FormApi'
+    ServiceIdApi,
+} from '../types/FormApi'
+
 import { ratingFieldName } from 'utils/consts'
+
 
 export const Y_API_BASE_URL = 'https://ya-praktikum.tech/api/v2'
 
