@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node server",
-    "build:client": "rimraf dist && vite build --outDir dist",
-    "build:server": "rimraf dist && vite build --outDir dist --ssr src/entry-server.tsx",
+    "build:client": "rimraf dist/client && vite build --outDir dist/client",
+    "build:server": "rimraf dist/server && vite build --outDir dist/server --ssr src/entry-server.tsx",
     "build": "yarn run build:server && yarn run build:client",
     "preview": "cross-env NODE_ENV=production node server",
     "lint": "eslint .",
