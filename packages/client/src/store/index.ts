@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import authReducer from './modules/auth/reducer'
 import gameReducer from './modules/game/reducer'
 import leaderBoardReducer from './modules/leaderboard/reducer'
+import forumReducer from './modules/forum/reducer'
 import { AppWindow } from 'types/Window'
 import themeReducer from 'store/modules/theme/reducer'
 
@@ -13,6 +14,7 @@ export const rootReducer = combineReducers({
   game: gameReducer,
   leaderBoard: leaderBoardReducer,
   theme: themeReducer,
+  forum: forumReducer,
 })
 
 let preloadedState = initialState
