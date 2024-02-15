@@ -1,6 +1,6 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
 import { loginValidationSchema } from '../../utils/ruleSchemes'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
 
@@ -17,11 +17,11 @@ const tailFormItemLayout = {
   },
 }
 
-const SignIn: React.FC = () => {
+export const SignIn: React.FC = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
-  const { login } = useSignIn()
+  const { login, yandexOAuthUrl } = useSignIn()
 
   const navigateToSiguUp = (): void => {
     navigate('/sign-up')
@@ -60,6 +60,9 @@ const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
+            <Link to={yandexOAuthUrl}>Войти с помощью yandex</Link>
+          </Form.Item>
+          <Form.Item {...tailFormItemLayout}>
             <Button
               type="link"
               htmlType="submit"
@@ -73,5 +76,3 @@ const SignIn: React.FC = () => {
     </Flex>
   )
 }
-
-export default SignIn

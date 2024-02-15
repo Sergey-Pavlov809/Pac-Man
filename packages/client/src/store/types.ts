@@ -1,6 +1,5 @@
 import { store } from './index'
-
-export type AppDispatch = typeof store.dispatch
+import { LeaderBoardItem } from 'types/FormApi'
 
 export interface AuthState {
   id: number | null
@@ -13,6 +12,14 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+  yandexOAuthId?: string
+}
+
+export interface LeaderBoardState {
+  items: LeaderBoardItem[] | []
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
 }
 
 export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

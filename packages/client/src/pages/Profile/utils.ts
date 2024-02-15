@@ -33,7 +33,7 @@ export const passwordValidator: Rule[] = [
 
 export const customRequest = async (
   file: string | Blob | File,
-  calback: React.Dispatch<React.SetStateAction<UserType>>
+  calback: (avatar: string) => void
 ): Promise<void> => {
   try {
     const formData = new FormData()
@@ -48,9 +48,9 @@ export const customRequest = async (
       throw new Error('Ошибка при загрузке файла')
     }
 
-    const result = await response.json()
+    const result: UserType = await response.json()
     message.success('Aватар успешно изменен')
-    calback(result)
+    calback(result.avatar ?? '')
   } catch (error) {
     message.error(`Ошибка загрузки файла: ${error}`)
   }

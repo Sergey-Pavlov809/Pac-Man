@@ -15,13 +15,16 @@ export const GamePage: React.FC = () => {
   const setIdleStatus = (): void => {
     setStatus(GameStatus.idle)
   }
+  const setFinishStatus = (): void => {
+    setStatus(GameStatus.finish)
+  }
 
   if (status === GameStatus.idle) {
     return <GameStart setInProgressStatus={setInProgressStatus} />
   }
 
   if (status === GameStatus.in_progress) {
-    return <Game />
+    return <Game setFinishStatus={setFinishStatus} />
   }
 
   if (status === GameStatus.finish) {

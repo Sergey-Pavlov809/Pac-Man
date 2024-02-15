@@ -7,5 +7,5 @@ export const routes = {
   game: (): string => '/game',
   leaderboard: (): string => '/leaderboard',
   forum: (): string => '/chat',
-  topic: (): string => '/topic',
+  topic: (): string => '/forum/:forumId',
 }

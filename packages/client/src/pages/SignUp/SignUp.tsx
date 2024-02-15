@@ -1,8 +1,9 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
-import { registerValidationSchema } from '../../utils/ruleSchemes'
+import { registerValidationSchema } from 'utils/ruleSchemes'
 import { RuleObject } from 'rc-field-form/lib/interface'
-import yApiService from '../../services/y-api-service'
-import { RegistrationFromApi } from '../../types/FormApi'
+import yApiService from 'services/y-api-service'
+import { RegistrationFromApi } from 'types/FormApi'
+import { useNavigate } from 'react-router-dom'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -20,12 +21,19 @@ const tailFormItemLayout = {
 export const SignUp: React.FC = () => {
   const [form] = Form.useForm()
 
+  const navigate = useNavigate()
+
+  const navigateToApp = (): void => {
+    navigate('/')
+  }
+
   const onFinish = async (values: RegistrationFromApi): Promise<void> => {
     console.log('Received values of form: ', values)
     try {
       const response = await yApiService.register(values)
       console.log('Result register', response)
       await checkUserRegistration()
+      navigateToApp()
     } catch (error) {
       console.log('Error register', error)
     }
@@ -34,6 +42,7 @@ export const SignUp: React.FC = () => {
   const checkUserRegistration = async (): Promise<void> => {
     try {
       const response = await yApiService.getUser()
+      navigate('/')
       console.log('Result getUser', response)
     } catch (error) {
       console.log('Error getUser', error)

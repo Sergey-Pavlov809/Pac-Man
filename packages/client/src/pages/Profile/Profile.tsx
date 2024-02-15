@@ -1,39 +1,47 @@
 import * as React from 'react'
 import { Navigate } from 'react-router'
-import { routes } from '../../routes'
+import { routes } from 'config/routes'
 import { Flex, Upload, UploadProps } from 'antd'
-import defaultAvatar from '../../assets/defaultAvatar.png'
+import defaultAvatar from 'assets/defaultAvatar.png'
 import { Button } from './components'
 import {
-  initialData,
   cardStyle,
   fieldStyle,
   isAuthenticated,
   baseApi,
   customRequest,
-  fetchData,
 } from './utils'
-import { UserType } from './types'
 import cn from 'classnames'
 import css from './Profile.module.css'
 import { ChangePassword } from './components/ChangePassword'
+import { useAppDispatch, useAppSelector } from 'hooks'
+import {
+  fetchUserData,
+  selectAuth,
+  setAvatar,
+} from 'store/modules/auth/reducer'
 
 export const Profile: React.FC = () => {
-  const [userData, setUserData] = React.useState<UserType>(initialData)
   const [isOpenPopup, setIsOpenPopup] = React.useState(false)
+  const dispatch = useAppDispatch()
 
   const props: UploadProps = {
     showUploadList: false,
     maxCount: 1,
-    customRequest: ({ file }) => customRequest(file, setUserData),
+    customRequest: ({ file }) =>
+      customRequest(file, (avatar: string) => dispatch(setAvatar(avatar))),
   }
+
+  const userData = useAppSelector(selectAuth)
 
   const avatarPath = userData.avatar
     ? `${baseApi}/resources/${userData.avatar}`
     : defaultAvatar
 
   React.useEffect(() => {
-    fetchData(setUserData)
+    if (!userData.first_name) {
+      dispatch(fetchUserData())
+    }
   }, [])
 
   if (!isAuthenticated) {
