@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development node server",
-    "build:client": "rimraf dist && vite build --outDir dist",
-    "build:server": "rimraf dist && vite build --outDir dist --ssr src/entry-server.tsx",
+    "build:client": "rimraf dist/client && vite build --outDir dist/client",
+    "build:server": "rimraf dist/server && vite build --outDir dist/server --ssr src/entry-server.tsx",
     "build": "yarn run build:server && yarn run build:client",
     "preview": "cross-env NODE_ENV=production node server",
     "lint": "eslint .",
@@ -13,13 +13,17 @@
     "test": "jest ./"
   },
   "dependencies": {
+    "@ant-design/icons": "5.1",
     "@reduxjs/toolkit": "^2.0.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/redux-mock-store": "^1.0.6",
     "antd": "^5.12.2",
     "classnames": "^2.3.2",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.2",
     "eslint-config-prettier": "^8.5.0",
     "gsap": "^3.12.3",
+    "js-cookie": "^3.0.5",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

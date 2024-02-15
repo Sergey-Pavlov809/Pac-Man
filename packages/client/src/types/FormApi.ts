@@ -40,3 +40,5 @@ export interface LeaderBoardItem {
 export interface LeaderBoardApi {
   data: LeaderBoardItem
 }
+
+export type UserTheme = 'light' | 'dark'
