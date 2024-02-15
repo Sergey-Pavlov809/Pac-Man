@@ -5,15 +5,13 @@ import { AddTopicModal, ForumTopicsList } from 'components/index'
 import { useAppDispatch, useAppSelector } from 'hooks'
 import { getTopics, postTopic, selectForum } from 'store/modules/forum/reducer'
 import { CreateTopicPayload } from 'types/ForumApi'
-import { selectAuth } from 'store/modules/auth/reducer'
+
 const { Title } = Typography
 
 export const Forum: React.FC = () => {
   const dispatch = useAppDispatch()
   const isCreateTopicLoading =
     useAppSelector(selectForum).createTopicStatus == 'loading'
-  const userId = useAppSelector(selectAuth).id
-
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [form] = Form.useForm()
 
@@ -34,7 +32,7 @@ export const Forum: React.FC = () => {
       return
     }
 
-    dispatch(postTopic({ ...values, user: { id: userId } }))
+    dispatch(postTopic(values))
       .unwrap()
       .then(() => {
         message.success('Тема успешно создана')
