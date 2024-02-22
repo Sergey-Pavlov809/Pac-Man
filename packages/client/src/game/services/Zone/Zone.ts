@@ -8,10 +8,10 @@ import {
   Rect,
 } from '../../entities/Entity/typings'
 import { EntityDynamic } from '../../entities/EntityDynamic/EntityDynamic'
-import { Player } from '../../entities/Player/Player'
-import { Ghost } from '../../entities/Ghost/Ghost'
 import { Terrain } from '../../entities/Terrain/Terrain'
 import { TerrainType } from '../../entities/Terrain/data'
+import { Ghost } from '../../entities/Ghost/Ghost'
+import { Player } from '../../entities/Player/Player'
 
 enum ZoneLayers {
   Main = 0,
@@ -145,17 +145,17 @@ export class Zone {
         EntityEvent.CheckExitAbroad,
         (newPos: { posX: number } | { posY: number }) => {
           if ('posX' in newPos) {
-            if (newPos.posX <= 0) {
-              newPos.posX = this.width
-            } else if (newPos.posX >= this.width) {
-              newPos.posX = 0
+            if (newPos.posX < 0) {
+              newPos.posX = this.width - 2
+            } else if (newPos.posX > this.width - 1) {
+              newPos.posX = 1
             }
           }
           if ('posY' in newPos) {
-            if (newPos.posY <= 0) {
-              newPos.posY = this.height
-            } else if (newPos.posY >= this.height) {
-              newPos.posY = 0
+            if (newPos.posY < 0) {
+              newPos.posY = this.height - 2
+            } else if (newPos.posY > this.height - 1) {
+              newPos.posY = 1
             }
           }
         }
@@ -175,7 +175,7 @@ export class Zone {
       entity.on(
         EntityEvent.GetGatePosition,
         (gatePosition: { rect: Rect | null }) => {
-          gatePosition.rect = this.getGatePosition()
+          gatePosition.rect = this.getGateRect()
         }
       )
 
@@ -183,6 +183,13 @@ export class Zone {
         const rect = posState.nextRect
         posState.hasCollision = this.hasCollision(rect, entity)
       })
+
+      entity.on(
+        EntityEvent.IsBeyondMatrix,
+        (posOut: { rect: Rect; isBeyondMatrix: boolean }) => {
+          posOut.isBeyondMatrix = this.isBeyondMatrix(posOut.rect)
+        }
+      )
 
       entity.on(
         EntityEvent.GetPositionEntity,
@@ -222,22 +229,38 @@ export class Zone {
     })
   }
 
-  checkGhostAtBase(entity: EntityDynamic): boolean {
-    const rect = entity.getRect()
+  checkGhostAtBase(entity: EntityDynamic | Rect): boolean {
+    const rect = entity instanceof EntityDynamic ? entity.getRect() : entity
     const baseRect = this.getBaseRect()
 
     if (baseRect) {
-      return (
+      const atBase =
         baseRect.posX < rect.posX + rect.width &&
         baseRect.posX + baseRect.width > rect.posX &&
         baseRect.posY < rect.posY + rect.height &&
         baseRect.posY + baseRect.height > rect.posY
+
+      return atBase //&& !this.checkGhostAtGate(entity)
+    }
+    return false
+  }
+
+  checkGhostAtGate(entity: EntityDynamic | Rect): boolean {
+    const rect = entity instanceof EntityDynamic ? entity.getRect() : entity
+    const gateRect = this.getGateRect()
+
+    if (gateRect) {
+      return (
+        gateRect.posX < rect.posX + rect.width &&
+        gateRect.posX + gateRect.width > rect.posX &&
+        gateRect.posY < rect.posY + rect.height &&
+        gateRect.posY + gateRect.height > rect.posY
       )
     }
     return false
   }
 
-  getGatePosition(): Rect | null {
+  getGateRect(): Rect | null {
     if (!this.gateRect) {
       const arrayX: number[] = []
       const arrayY: number[] = []
@@ -261,8 +284,8 @@ export class Zone {
         this.gateRect = {
           posX: minX,
           posY: minY,
-          width: maxX - minX,
-          height: maxY - minY,
+          width: maxX - minX + 1,
+          height: maxY - minY + 1,
         }
       }
     }
@@ -348,11 +371,15 @@ export class Zone {
           if (typeof layer !== 'number') {
             continue
           }
-          const ent = this.matrix[layer][x]?.[y]
-          if (ent && ent !== entity && ent.spawned && !ent.shouldBeDestroyed) {
-            if (!entities.includes(ent)) {
-              entities.push(ent)
-            }
+          const layerCell = this.matrix[layer][x]?.[y]
+          if (
+            layerCell &&
+            layerCell !== entity &&
+            layerCell.spawned &&
+            !layerCell.shouldBeDestroyed &&
+            !entities.includes(layerCell)
+          ) {
+            entities.push(layerCell)
           }
         }
       }
@@ -366,57 +393,41 @@ export class Zone {
    * Если да, то совершает над ней необходимые операции
    */
   hasCollisionsWithMatrix(rect: Rect, entity: Entity): boolean {
-    const isNeitherPlayerGhost = (
-      entity: Entity,
-      layerCell: Entity | null
-    ): boolean => {
-      return !(
-        (entity instanceof Player && layerCell instanceof Ghost) ||
-        (entity instanceof Ghost && layerCell instanceof Player)
-      )
-    }
-
-    const isEntityPlayerOrGhost = (entity: Entity): boolean => {
-      return entity instanceof Player || entity instanceof Ghost
-    }
-
-    const isLayerCellBlocked = (
-      layerCell: Entity | null,
-      entity: Entity
-    ): boolean => {
-      return (
-        (layerCell && layerCell !== entity && !layerCell.crossable) || false
-      )
-    }
-
-    const isOnLoose = (layerCell: Entity | null, entity: Entity): boolean => {
-      return (
-        entity instanceof Ghost &&
-        !this.checkGhostAtBase(entity) &&
-        layerCell instanceof Terrain &&
-        layerCell.variant === TerrainType.Gate
-      )
-    }
-
     for (let x = rect.posX + rect.width - 1; x >= rect.posX; --x) {
       for (let y = rect.posY + rect.height - 1; y >= rect.posY; --y) {
-        for (const layer of Object.values(ZoneLayers)) {
-          if (typeof layer !== 'number') {
-            continue
-          }
+        const layerMainCell = this.matrix[ZoneLayers.Main][x]?.[y]
 
-          const layerCell = this.matrix[layer][x]?.[y]
-          if (isOnLoose(layerCell, entity)) {
-            return true
-          }
+        if (layerMainCell && !layerMainCell.crossable) {
+          return true
+        }
 
-          if (
-            isNeitherPlayerGhost(entity, layerCell) &&
-            isEntityPlayerOrGhost(entity) &&
-            isLayerCellBlocked(layerCell, entity)
-          ) {
-            return true
-          }
+        if (
+          layerMainCell &&
+          layerMainCell instanceof Terrain &&
+          entity instanceof Ghost &&
+          !entity.eaten &&
+          !this.checkGhostAtBase(entity) &&
+          this.checkGhostAtBase(layerMainCell.getRect())
+        ) {
+          return true
+        }
+
+        const layerGhostsCell = this.matrix[ZoneLayers.Ghosts][x]?.[y]
+        if (
+          layerGhostsCell &&
+          entity instanceof Ghost &&
+          entity !== layerGhostsCell
+        ) {
+          return true
+        }
+
+        const layerPacmanCell = this.matrix[ZoneLayers.Pacman][x]?.[y]
+        if (
+          layerPacmanCell &&
+          entity instanceof Player &&
+          entity !== layerPacmanCell
+        ) {
+          return true
         }
       }
     }

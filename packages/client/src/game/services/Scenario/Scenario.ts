@@ -21,6 +21,9 @@ import { Food } from '../../entities/Food/Food'
 import { FoodType } from '../../entities/Food/data'
 import { Life } from '../../entities/Life/Life'
 import { LifeType } from '../../entities/Life/data'
+import { ScoreType } from '../../entities/Score/data'
+import { Score } from '../../entities/Score/Score'
+import { UIElementSettings } from '../../entities/UIElement/typings'
 
 export { ScenarioEvent }
 
@@ -41,6 +44,11 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
   life1: Life[] = []
   life2: Life[] = []
 
+  /** Очки на карте. */
+  score: Score | null
+  score1: Score | null
+  score2: Score | null
+
   /** Количество еды на карте. */
   amountOfFoodLeft = 0
 
@@ -49,6 +57,9 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
     this.mapManager = new MapManager(game)
     this.player1 = null
     this.player2 = null
+    this.score = null
+    this.score1 = null
+    this.score2 = null
 
     this.createTerrain()
   }
@@ -119,6 +130,26 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
           this.game.state.playerTwo.lives++
           entity = new Life(props)
           this.life2.push(entity)
+        } else {
+          return
+        }
+
+        break
+      case 'score':
+        if (props.variant === ScoreType.Score1) {
+          entity = new Score(props as UIElementSettings)
+          this.score1 = entity
+        } else if (
+          this.game.state.mode === 'MULTIPLAYER' &&
+          (props.variant === ScoreType.Score2 ||
+            props.variant === ScoreType.Score)
+        ) {
+          entity = new Score(props as UIElementSettings)
+          if (props.variant === ScoreType.Score) {
+            this.score = entity
+          } else {
+            this.score2 = entity
+          }
         } else {
           return
         }
@@ -206,6 +237,11 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
           }
         }
       })
+      .on(EntityEvent.GhostIsFrightened, () => {
+        this.ghosts.forEach(entity => {
+          entity.startle()
+        })
+      })
       .on(EntityEvent.PlayerAteFood, (food: Food) => {
         food.despawn()
         --this.amountOfFoodLeft
@@ -227,8 +263,37 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
             break
         }
 
+        this.score1?.render(String(this.game.state.playerOne.score))
+
+        if (this.game.state.mode === 'MULTIPLAYER') {
+          this.score2?.render(String(this.game.state.playerTwo.score))
+          this.score?.render(
+            String(
+              this.game.state.playerOne.score + this.game.state.playerTwo.score
+            )
+          )
+        }
+
         if (this.amountOfFoodLeft === 0) {
           this.emit(ScenarioEvent.MissionAccomplished)
+        }
+      })
+      .on(EntityEvent.PlayerAteGhost, () => {
+        if (entity.variant === PlayerType.Player1) {
+          this.game.state.playerOne.score += 100
+        } else {
+          this.game.state.playerTwo.score += 100
+        }
+
+        this.score1?.render(String(this.game.state.playerOne.score))
+
+        if (this.game.state.mode === 'MULTIPLAYER') {
+          this.score2?.render(String(this.game.state.playerTwo.score))
+          this.score?.render(
+            String(
+              this.game.state.playerOne.score + this.game.state.playerTwo.score
+            )
+          )
         }
       })
       .on(EntityEvent.Destroyed, () => {

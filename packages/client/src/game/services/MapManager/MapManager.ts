@@ -15,6 +15,7 @@ import {
   ghost,
   life,
   pacman,
+  score,
   wallCells,
 } from './data'
 import { TerrainType } from '../../entities/Terrain/data'
@@ -22,11 +23,15 @@ import { GhostType } from '../../entities/Ghost/data'
 import { PlayerType } from '../../entities/Player/data'
 import { FoodType } from '../../entities/Food/data'
 import { LifeType } from '../../entities/Life/data'
+import { ScoreType } from '../../entities/Score/data'
 
 export class MapManager {
   private map: MapTerrainData | null = null
   private mapLevelIndex = 0
   private mapTerrainData = levels
+
+  width = 0
+  height = 0
 
   constructor(private game: Game) {
     this.mapLevelIndex = this.game.state.level - 1
@@ -34,6 +39,9 @@ export class MapManager {
 
   getMap(): MapTerrainData {
     this.map = this.mapTerrainData[this.mapLevelIndex]
+
+    this.width = this.map.width
+    this.height = this.map.height
 
     return this.map
   }
@@ -100,6 +108,9 @@ export class MapManager {
     } else if (life.includes(cell)) {
       type = 'life'
       variant = LifeType[key as keyof typeof LifeType]
+    } else if (score.includes(cell)) {
+      type = 'score'
+      variant = ScoreType[key as keyof typeof ScoreType]
     } else {
       return
     }

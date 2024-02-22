@@ -3,6 +3,9 @@ import * as React from 'react'
 import { useEffect, useRef } from 'react'
 import { Flex } from 'antd'
 import { Pacman } from '../../game'
+import { ControllerElemsClassName } from '../../game/services/Controller/data'
+import css from './Game.module.css'
+import cn from 'classnames'
 
 export const Game: React.FC = () => {
   const gameRoot = useRef(null)
@@ -25,7 +28,13 @@ export const Game: React.FC = () => {
       align="center"
       gap="middle"
       wrap="wrap">
-      <div ref={gameRoot}></div>
+      <div
+        className={cn(
+          ControllerElemsClassName.FullscreenWrapper,
+          css.fullscreen
+        )}>
+        <div ref={gameRoot}></div>
+      </div>
     </Flex>
   )
 }

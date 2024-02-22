@@ -23,12 +23,15 @@ export class Terrain extends Entity {
         break
     }
 
+    if (this.variant === TerrainType.Gate) {
+      this.crossable = true
+    }
+
     this.registerTerrainEvents()
   }
 
   openGate(): void {
     if (this.variant === TerrainType.Gate) {
-      this.crossable = true
       this.mainSpriteCoordinates = []
       this.refreshSprite()
       this.setLoopDelay(() => {

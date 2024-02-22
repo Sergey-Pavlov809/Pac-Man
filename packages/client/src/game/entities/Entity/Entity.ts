@@ -185,7 +185,13 @@ export abstract class Entity extends EventEmitter<EntityEvent> {
   }
 
   /** Аналог setTimeout. Метод описан в Game. */
-  setLoopDelay(callback: () => void, delay: number): void {
-    this.emit(EntityEvent.SetLoopDelay, callback, delay)
+  setLoopDelay(callback: () => void, delay: number): string {
+    const result = { id: '' }
+    this.emit(EntityEvent.SetLoopDelay, callback, delay, result)
+    return result.id
+  }
+
+  deleteLoopDelay(id: string): void {
+    this.emit(EntityEvent.DeleteLoopDelay, id)
   }
 }

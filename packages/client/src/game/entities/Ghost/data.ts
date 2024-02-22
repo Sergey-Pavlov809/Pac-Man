@@ -12,6 +12,7 @@ export enum GhostMode {
   Chase = 'CHASE',
   Scatter = 'SCATTER',
   Frightened = 'FRIGHTENED',
+  Eaten = 'EATEN',
 }
 
 export const ghostInitialSettings: Record<GhostType, GhostSettings> = {

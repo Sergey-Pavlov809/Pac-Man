@@ -103,12 +103,17 @@ export class Loop {
 
   registerTimerHandlers(entity: Entity): void {
     entity.on(EntityEvent.SetLoopDelay, this.setLoopDelay.bind(this))
+    entity.on(EntityEvent.DeleteLoopDelay, this.deleteLoopDelay.bind(this))
     entity.on(EntityEvent.SetLoopInterval, this.setLoopInterval.bind(this))
     entity.on(EntityEvent.ClearLoopInterval, this.clearLoopInterval.bind(this))
   }
 
   /** Аналог setTimeout, который работает через игровой цикл. */
-  setLoopDelay(callback: () => void, delay: number): void {
+  setLoopDelay(
+    callback: () => void,
+    delay: number,
+    result: { id: string } = { id: '' }
+  ): void {
     let loopMark = this.loopCount + this.convertTimeToLoops(delay)
 
     if (loopMark === this.loopCount) {
@@ -120,6 +125,7 @@ export class Loop {
     }
 
     this.loopDelays[loopMark].push(callback)
+    result.id = `${loopMark}-${this.loopDelays[loopMark].length - 1}`
   }
 
   convertTimeToLoops(delay: number): number {
@@ -154,6 +160,17 @@ export class Loop {
         callback()
       }
       delete this.loopDelays[this.loopCount]
+    }
+  }
+
+  deleteLoopDelay(id: string): void {
+    const values = id.split('-')
+    if (values.length === 2) {
+      if (this.loopDelays[Number(values[0])]?.[Number(values[1])]) {
+        this.loopDelays[Number(values[0])][Number(values[1])] = (): void => {
+          return
+        }
+      }
     }
   }
 

@@ -16,6 +16,9 @@ import { ControllerKeyboard } from '../Controller/ControllerKeyboard'
 import { ControllerPointer } from '../Controller/ControllerPointer'
 import { Zone } from '../Zone/Zone'
 import { Resources, ResourcesEvent } from '../Resources/Resources'
+import { ControllerEvent } from '../Controller/data'
+import { UIElement } from '../../entities/UIElement/UIElement'
+import { Color } from '../View/colors'
 
 export class Game extends EventEmitter {
   static __instance: Game
@@ -29,6 +32,8 @@ export class Game extends EventEmitter {
   controllerPlayerOne: Controller
   controllerPlayerTwo: Controller
   scenarioInit: boolean
+
+  pausaEntity: UIElement | null
 
   private constructor() {
     super()
@@ -44,6 +49,7 @@ export class Game extends EventEmitter {
     this.controllerPlayerOne = this.createController(KeyBindingsWasd)
     this.controllerPlayerTwo = new ControllerKeyboard(KeyBindingsArrows)
     this.scenarioInit = false
+    this.pausaEntity = null
   }
 
   static create(): Game {
@@ -66,6 +72,7 @@ export class Game extends EventEmitter {
     if (this.scenarioInit) return
 
     this.scenarioInit = true
+
     /** Инициализируем инстанс сценария */
     this.scenario = new Scenario(this)
       .on(ScenarioEvent.GameOver, async () => {
@@ -75,6 +82,17 @@ export class Game extends EventEmitter {
       .on(ScenarioEvent.MissionAccomplished, async () => {
         //Уровень пройден
         console.log('mission accomplished')
+      })
+
+    this.controllerAll
+      .offAll(ControllerEvent.Pause)
+      .on(ControllerEvent.Pause, () => {
+        this.togglePause()
+        //entity.stop()
+      })
+      .offAll(ControllerEvent.Fullscreen)
+      .on(ControllerEvent.Fullscreen, () => {
+        this.view.toggleFullScreen()
       })
   }
 
@@ -125,5 +143,36 @@ export class Game extends EventEmitter {
         type: 'mouse',
       }),
     ])
+  }
+
+  togglePause(newState: boolean | null = null): void {
+    if (!this.state.inited || !this.scenario) {
+      return
+    }
+
+    if (!this.pausaEntity) {
+      this.pausaEntity = new UIElement({
+        posX: this.scenario.mapManager.width * 2 - 15,
+        posY: this.scenario.mapManager.height * 2 - 5,
+        width: 30,
+        height: 10,
+        color: Color.White,
+        align: 'center',
+        text: 'ПАУЗА',
+      })
+    }
+
+    if (newState === false || this.state.paused) {
+      this.loop.start()
+      this.controllerPlayerOne.load()
+      this.controllerPlayerTwo.load()
+      this.view.eraseFromLayer(this.pausaEntity, 'overlay')
+    } else if (newState === true || !this.state.paused) {
+      this.loop.stop()
+      this.controllerPlayerOne.unload()
+      this.controllerPlayerTwo.unload()
+      this.view.drawTextOnLayer(this.pausaEntity, 'overlay')
+    }
+    this.state.paused = !this.state.paused
   }
 }

@@ -14,7 +14,7 @@ const KeyBindingsGeneral: BindingConfig = {
   KeyP: [ControllerEvent.Pause],
   KeyM: [ControllerEvent.Mute],
   Minus: [ControllerEvent.Mute],
-  KeyK: [ControllerEvent.Fullscreen],
+  KeyF: [ControllerEvent.Fullscreen],
   Equal: [ControllerEvent.Fullscreen],
   Backquote: [ControllerEvent.Fullscreen],
   Escape: [ControllerEvent.Escape],

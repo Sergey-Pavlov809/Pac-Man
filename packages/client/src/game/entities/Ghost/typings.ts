@@ -1,7 +1,7 @@
 import { type EntityDynamicSettings } from '../EntityDynamic/typings'
 
 export type GhostVariant = 'BLINKY' | 'PINKI' | 'INKY' | 'CLYDE'
-export type GhostMove = 'CHASE' | 'SCATTER' | 'FRIGHTENED'
+export type GhostMove = 'CHASE' | 'SCATTER' | 'FRIGHTENED' | 'EATEN'
 
 export type PhaseMove = {
   mode: GhostMove

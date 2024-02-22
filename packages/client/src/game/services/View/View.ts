@@ -11,6 +11,8 @@ import { Entity } from '../../entities/Entity/Entity'
 import { EntityEvent, type Rect } from '../../entities/Entity/typings'
 import { Player } from '../../entities/Player/Player'
 import { ResourcesEvent, SpriteName } from '../Resources/data'
+import { UIElement } from '../../entities/UIElement/UIElement'
+import { ControllerElemsClassName } from '../Controller/data'
 
 export class View extends EventEmitter {
   width = 0
@@ -25,6 +27,9 @@ export class View extends EventEmitter {
   /** Нижний слой канваса, используется как фон. */
   floorLayer!: HTMLCanvasElement
   spriteImg: HTMLImageElement | null = null
+
+  /** Слушатель события изменения размера окна. Автоматически ресайзит размер канваса. */
+  canvasResizeListener = this.canvasResizeHandler.bind(this)
 
   constructor(private game: Game) {
     super()
@@ -56,13 +61,45 @@ export class View extends EventEmitter {
     if (this.isRootEmpty()) {
       this.floorLayer = this.createLayer('floor')
       this.floorLayer.style.background = this.gameBgColor
-      this.createLayer('dynamic')
+      this.createLayer('ghost')
+      this.createLayer('pacman')
       this.createLayer('overlay').style.position = 'relative'
     }
+
+    // Автоматический ресайз игрового поля. Изменяет размер канваса при изменении размера окна.
+    window.addEventListener('resize', this.canvasResizeListener)
   }
 
   unload(): void {
+    window.removeEventListener('resize', this.canvasResizeListener)
     this.reset()
+  }
+
+  toggleFullScreen(): void {
+    if (!document.fullscreenElement) {
+      document
+        .querySelector(`.${ControllerElemsClassName.FullscreenWrapper}`)
+        ?.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
+  /** Обработчик для события изменения размера окна. Автоматически ресайзит размер канваса. */
+  canvasResizeHandler(): void {
+    if (
+      !(this.root.firstChild instanceof HTMLCanvasElement) ||
+      !this.root.firstChild.width
+    ) {
+      return
+    }
+
+    const currentWidth = this.root.firstChild.width
+    const requiredWidth = this.width * this.getPixelRatio()
+
+    const scaleRatio = requiredWidth / currentWidth
+
+    this.root.style.transform = 'scale(' + scaleRatio * 100 + '%)'
   }
 
   /** Определяет на какой слой необходимо добавить сущность и запускает bindEntityToLayer(). */
@@ -70,8 +107,13 @@ export class View extends EventEmitter {
     let layer = ''
     switch (entity.type) {
       case 'pacman':
+        layer = 'pacman'
+        break
       case 'ghost':
-        layer = 'dynamic'
+        layer = 'ghost'
+        break
+      case 'score':
+        layer = 'overlay'
         break
       default:
         layer = 'floor'
@@ -97,6 +139,10 @@ export class View extends EventEmitter {
         [EntityEvent.ShouldBeDestroyed]: () => {
           this.eraseFromLayer(entity, layerId)
           this.removeEntityFromLayer(entity, layerId)
+        },
+        [EntityEvent.ShouldRenderText]: () => {
+          this.eraseFromLayer(entity, layerId)
+          this.drawTextOnLayer(entity as UIElement, layerId)
         },
         [EntityEvent.Destroyed]: () => {
           // Событие после удаления
@@ -261,6 +307,37 @@ export class View extends EventEmitter {
         this.setNextSpriteFrame(animation, entity)
       })
     }
+  }
+
+  /** Рисует текст на canvas-слое. */
+  drawTextOnLayer(elem: UIElement, layerId: keyof LayerList): void {
+    const context = this.layers[layerId].context
+    // Убавляем здесь 1 пиксель, чтобы ниже прибавить его к posY, - тем самым убираем баг с затиранием текста
+    // (когда его верхняя часть остаётся на слое)
+    context.font = `bold ${this.convertToPixels(elem.height) - 1}px Arial`
+    context.textAlign = elem.align
+    context.textBaseline = 'top'
+    if (elem.backImg) {
+      const pattern = context.createPattern(elem.backImg, 'repeat')
+      if (pattern !== null) {
+        context.fillStyle = pattern
+      }
+    } else {
+      context.fillStyle = elem.color
+    }
+    let posX = elem.posX
+    if (elem.align === 'center') {
+      posX += Math.round(elem.width / 2)
+    }
+    if (elem.align === 'right') {
+      posX += elem.width
+    }
+    // Прибавляем к posY 1 пиксель, чтобы убрать баг с затиранием текста, когда его верхняя часть остаётся на слое
+    context.fillText(
+      elem.text,
+      this.convertToPixels(posX),
+      this.convertToPixels(elem.posY) + 1
+    )
   }
 
   /** Меняет sprite-frame, который отрисуется в следующий раз. */

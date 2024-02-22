@@ -34,23 +34,16 @@ export abstract class EntityDynamic extends Entity {
   /** Временно блокирует возможность перемещения (например на время отрисовки анимации спауна). */
   frozen = false
 
+  spawnPos: Pos | null = null
+
   constructor(props: EntityDynamicSettings) {
     super(props)
     this.movable = true
   }
 
-  resetPosition(coords?: Pos): void {
-    this.spawn(coords)
-    if (!this.spawned) {
-      this.setLoopDelay(this.resetPosition.bind(this, coords), 200)
-    } else {
-      this.lastRect = null
-      this.nextRect = null
-      this.moveStepsProgress = 0
-      this.frozen = false
-      this.crossable = false
-      this.shouldBeDestroyed = false
-    }
+  spawn(coords?: Pos): boolean {
+    this.spawnPos = coords || { posX: this.posX, posY: this.posY }
+    return super.spawn(coords)
   }
 
   /** Рассчитывает количество игровых циклов для одного хода с поправкой на скорость */
@@ -112,18 +105,6 @@ export abstract class EntityDynamic extends Entity {
       return
     }
 
-    const occupiedCell: Entity[] = []
-    this.emit(EntityEvent.CheckOccupiedCell, occupiedCell)
-    if (occupiedCell.length > 0) {
-      if (!this.checkCellOccupancy(occupiedCell)) {
-        return
-      }
-    }
-
-    if (!this.isItPossibleToMove()) {
-      return
-    }
-
     const hasNewDirection = this.stopping
       ? false
       : this.direction !== this.nextDirection
@@ -165,16 +146,6 @@ export abstract class EntityDynamic extends Entity {
         this.refreshSprite()
       }
     }
-  }
-
-  //Дополнительные действия, когда сущности в одной ячейке
-  checkCellOccupancy(_entities: Entity[]): boolean {
-    return true
-  }
-
-  //Дополнительные проверки перед движением
-  isItPossibleToMove(): boolean {
-    return true
   }
 
   /** Рассчитывает координаты следующего хода. */

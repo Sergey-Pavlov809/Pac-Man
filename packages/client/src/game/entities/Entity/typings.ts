@@ -1,8 +1,10 @@
 import { type PlayerVariant } from '../Player/typings'
 import { type GhostVariant } from '../Ghost/typings'
 import { type TerrainVariant } from '../Terrain/typings'
-import { FoodType } from '../Food/data'
-import { LifeType } from '../Life/data'
+import { Color } from 'antd/es/color-picker'
+import { ScoreVariant } from '../Score/typings'
+import { LifeVariant } from '../Life/typings'
+import { FoodVariant } from '../Food/typings'
 
 export type EntityType =
   | 'pacman'
@@ -10,6 +12,7 @@ export type EntityType =
   | 'wall'
   | 'food'
   | 'life'
+  | 'score'
   | 'custom'
 
 export enum Direction {
@@ -55,11 +58,13 @@ export enum EntityEvent {
   Destroyed = 'DESTROYED',
 
   SetLoopDelay = 'SET_LOOP_DELAY',
+  DeleteLoopDelay = 'DELETE_LOOP_DELAY',
   SetLoopInterval = 'SET_LOOP_INTERVAL',
   ClearLoopInterval = 'CLEAR_LOOP_INTERVAL',
 
   WillHaveNewPos = 'ENTITY_WILL_HAVE_NEW_POS',
   ShouldBeDestroyed = 'ENTITY_SHOULD_BE_DESTROYED',
+  IsBeyondMatrix = 'ENTITY_IS_BEYUND_MATRIX',
   ShouldUpdate = 'ENTITY_SHOULD_UPDATE',
   DidUpdate = 'ENTITY_DID_UPDATE',
   GetPositionEntity = 'ENTITY_GET_POSITION',
@@ -68,8 +73,10 @@ export enum EntityEvent {
   CheckOccupiedCell = 'ENTITY_CHECK_OCCUPIED_CELL',
   PlayerCaught = 'ENTITY_PLAYER_CAUTCH',
   PlayerAteFood = 'PLAYER_ATE_FOOD',
+  GhostIsFrightened = 'ENTITY_GOST_IS_FRIGHTENED',
   CheckGhostAtBase = 'ENTITY_CHECK_GHOST_AT_BASE',
   GetGatePosition = 'ENTITY_GET_GATE_POSITION',
+  PlayerAteGhost = 'ENTITY_PLAYER_ATE_GHOST',
   openGate = 'ENTITY_OPEN_GATE',
   ShouldRenderText = 'ENTITY_SHOULD_RENDER_TEXT',
 
@@ -83,15 +90,16 @@ export type EntityVariant =
   | PlayerVariant
   | GhostVariant
   | TerrainVariant
-  | FoodType
-  | LifeType
+  | FoodVariant
+  | LifeVariant
+  | ScoreVariant
 
 export type EntitySettings = Pos &
   Partial<Size> &
   Partial<{
     direction: Direction
     type: EntityType
-    color: string
+    color: Color | string
     tile: Tile
     variant?: EntityVariant
   }>

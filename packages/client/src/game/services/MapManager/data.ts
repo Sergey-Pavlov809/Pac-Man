@@ -63,6 +63,10 @@ export enum Cell {
 
   Life1 = 158,
   Life2 = 38,
+
+  Score = 401,
+  Score1 = 402,
+  Score2 = 403,
 }
 
 export const wallCells: Cell[] = [
@@ -121,6 +125,8 @@ export const gateWallCells: Cell[] = [Cell.GateCell01]
 export const pacman: Cell[] = [Cell.Player1, Cell.Player2]
 
 export const life: Cell[] = [Cell.Life1, Cell.Life2]
+
+export const score: Cell[] = [Cell.Score, Cell.Score1, Cell.Score2]
 
 export const ghost: Cell[] = [
   Cell.Ghost1,

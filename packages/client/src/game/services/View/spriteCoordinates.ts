@@ -189,6 +189,20 @@ const coordinates: Coordinates = {
         [getWeight(37), getHeight(37), 50, 50],
       ],
     },
+    'ghost.fright': [
+      [getWeight(221), getHeight(221), 50, 50],
+      [getWeight(241), getHeight(241), 50, 50],
+    ],
+    'ghost.fright.end': [
+      [getWeight(221), getHeight(221), 50, 50],
+      [getWeight(242), getHeight(242), 50, 50],
+    ],
+    'ghost.eaten': {
+      UP: [[getWeight(167), getHeight(167), 50, 50]],
+      DOWN: [[getWeight(127), getHeight(127), 50, 50]],
+      LEFT: [[getWeight(147), getHeight(147), 50, 50]],
+      RIGHT: [[getWeight(107), getHeight(107), 50, 50]],
+    },
   },
 
   [GameThemeName.Modern]: {
