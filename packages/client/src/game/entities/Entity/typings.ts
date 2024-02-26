@@ -79,6 +79,8 @@ export enum EntityEvent {
   PlayerAteGhost = 'ENTITY_PLAYER_ATE_GHOST',
   openGate = 'ENTITY_OPEN_GATE',
   ShouldRenderText = 'ENTITY_SHOULD_RENDER_TEXT',
+  GhostMovesToBase = 'THE_GHOST_MOVES_TO_BASE',
+  GhostFinishedMovingToBase = 'GHOST_FINISHED_MOVING_TO_BASE',
 
   AnimationStarted = 'ANIMATION_STARTED',
   AnimationEnded = 'ANIMATION_ENDED',

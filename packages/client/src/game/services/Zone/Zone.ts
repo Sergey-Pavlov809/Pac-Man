@@ -148,14 +148,14 @@ export class Zone {
             if (newPos.posX < 0) {
               newPos.posX = this.width - 2
             } else if (newPos.posX > this.width - 1) {
-              newPos.posX = 1
+              newPos.posX = 0
             }
           }
           if ('posY' in newPos) {
             if (newPos.posY < 0) {
               newPos.posY = this.height - 2
             } else if (newPos.posY > this.height - 1) {
-              newPos.posY = 1
+              newPos.posY = 0
             }
           }
         }

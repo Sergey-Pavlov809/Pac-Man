@@ -19,6 +19,7 @@ import { Resources, ResourcesEvent } from '../Resources/Resources'
 import { ControllerEvent } from '../Controller/data'
 import { UIElement } from '../../entities/UIElement/UIElement'
 import { Color } from '../View/colors'
+import { AudioManager } from '../AudioManager/AudioManager'
 
 export class Game extends EventEmitter {
   static __instance: Game
@@ -31,6 +32,7 @@ export class Game extends EventEmitter {
   controllerAll: Controller
   controllerPlayerOne: Controller
   controllerPlayerTwo: Controller
+  audioManager: AudioManager
   scenarioInit: boolean
 
   pausaEntity: UIElement | null
@@ -48,6 +50,7 @@ export class Game extends EventEmitter {
     })
     this.controllerPlayerOne = this.createController(KeyBindingsWasd)
     this.controllerPlayerTwo = new ControllerKeyboard(KeyBindingsArrows)
+    this.audioManager = new AudioManager(this)
     this.scenarioInit = false
     this.pausaEntity = null
   }
@@ -72,6 +75,8 @@ export class Game extends EventEmitter {
     if (this.scenarioInit) return
 
     this.scenarioInit = true
+
+    this.audioManager.emit('levelIntro')
 
     /** Инициализируем инстанс сценария */
     this.scenario = new Scenario(this)
@@ -104,6 +109,7 @@ export class Game extends EventEmitter {
     this.controllerAll.load()
     this.controllerPlayerOne.load()
     this.controllerPlayerTwo.load()
+    this.audioManager.load()
   }
 
   unload(): void {
@@ -114,6 +120,7 @@ export class Game extends EventEmitter {
     this.controllerAll.unload()
     this.controllerPlayerOne.unload()
     this.controllerPlayerTwo.unload()
+    this.audioManager.unload()
   }
 
   reset(): void {
@@ -127,12 +134,14 @@ export class Game extends EventEmitter {
     this.controllerAll.reset()
     this.controllerPlayerOne.reset()
     this.controllerPlayerTwo.reset()
+    this.audioManager.reset()
   }
 
   addEntity(entity: Entity): void {
     this.loop.add(entity)
     this.view.add(entity)
     this.zone.add(entity)
+    this.audioManager.add(entity)
   }
 
   private createController(keyBinding: BindingConfig): ControllerManager {
@@ -174,5 +183,6 @@ export class Game extends EventEmitter {
       this.view.drawTextOnLayer(this.pausaEntity, 'overlay')
     }
     this.state.paused = !this.state.paused
+    this.audioManager.emit('pause', this.state.paused)
   }
 }

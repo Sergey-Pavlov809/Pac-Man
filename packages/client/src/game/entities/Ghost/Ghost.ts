@@ -82,6 +82,7 @@ export class Ghost extends EntityDynamic {
     this.moveSpeed += 4
     this.modeGhost = GhostMode.Eaten
 
+    this.emit(EntityEvent.GhostMovesToBase)
     this.eatenAnimation(this.nextDirection)
   }
 
@@ -93,6 +94,7 @@ export class Ghost extends EntityDynamic {
     this.moveSpeed -= 4
     this.modeGhost = GhostMode.Chase
 
+    this.emit(EntityEvent.GhostFinishedMovingToBase)
     this.motionAnimation(this.nextDirection)
   }
 
