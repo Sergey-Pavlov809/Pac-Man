@@ -62,6 +62,8 @@ export class Scenario extends EventEmitter<ScenarioEvent> {
     this.score2 = null
 
     this.createTerrain()
+
+    this.emit(ScenarioEvent.GameStarted)
   }
 
   /** Создаёт статические объекты. */

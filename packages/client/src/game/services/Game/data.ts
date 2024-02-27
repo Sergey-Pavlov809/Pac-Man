@@ -11,3 +11,9 @@ export enum GameMode {
   Singleplayer = 'SINGLEPLAYER',
   Multiplayer = 'MULTIPLAYER',
 }
+
+export type StatisticsData = {
+  score: number
+  hasPlayerWon: boolean
+  time: number
+}

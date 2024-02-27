@@ -23,7 +23,7 @@
 
 .fullscreen {
   position: absolute;
-  bottom: 24px;
+  pointer-events: none;
   width: 100%;
 }
 

@@ -6,14 +6,27 @@ import { Pacman } from '../../game'
 import { ControllerElemsClassName } from '../../game/services/Controller/data'
 import css from './Game.module.css'
 import cn from 'classnames'
+import { GameEvents } from '../../game/services/Game/data'
+import { setScore } from 'store/modules/game/reducer'
+import { useAppDispatch } from 'hooks'
 
-export const Game: React.FC = () => {
+type GameProps = {
+  setFinishStatus: () => void
+}
+
+export const Game: React.FC<GameProps> = ({ setFinishStatus }) => {
   const gameRoot = useRef(null)
+  const dispatch = useAppDispatch()
 
   const game = Pacman.create()
 
   useEffect(() => {
     game.init(gameRoot.current)
+
+    game.on(GameEvents.UpdateLeaderboard, data => {
+      dispatch(setScore(data.score))
+      setFinishStatus()
+    })
 
     return () => {
       game.unload()

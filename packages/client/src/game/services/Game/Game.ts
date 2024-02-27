@@ -20,6 +20,7 @@ import { ControllerEvent } from '../Controller/data'
 import { UIElement } from '../../entities/UIElement/UIElement'
 import { Color } from '../View/colors'
 import { AudioManager } from '../AudioManager/AudioManager'
+import { GameEvents, StatisticsData } from './data'
 
 export class Game extends EventEmitter {
   static __instance: Game
@@ -33,7 +34,9 @@ export class Game extends EventEmitter {
   controllerPlayerOne: Controller
   controllerPlayerTwo: Controller
   audioManager: AudioManager
+
   scenarioInit: boolean
+  sessionElapsedTime = 0
 
   pausaEntity: UIElement | null
 
@@ -63,6 +66,7 @@ export class Game extends EventEmitter {
   }
 
   init(root: HTMLElement | null): void {
+    this.scenarioInit = false
     this.unload()
     this.load(root)
 
@@ -76,17 +80,30 @@ export class Game extends EventEmitter {
 
     this.scenarioInit = true
 
-    this.audioManager.emit('levelIntro')
-
     /** Инициализируем инстанс сценария */
     this.scenario = new Scenario(this)
+      .on(ScenarioEvent.GameStarted, async () => {
+        //Игра начата
+        this.audioManager.emit('levelIntro')
+        this.sessionElapsedTime = new Date().getTime()
+      })
       .on(ScenarioEvent.GameOver, async () => {
         //Игра закончена
-        console.log('game over')
+        this.sessionElapsedTime = new Date().getTime() - this.sessionElapsedTime
+        this.emit(GameEvents.UpdateLeaderboard, {
+          score: this.state.playerOne.score + this.state.playerTwo.score,
+          hasPlayerWon: false,
+          time: this.sessionElapsedTime,
+        })
       })
       .on(ScenarioEvent.MissionAccomplished, async () => {
         //Уровень пройден
-        console.log('mission accomplished')
+        this.sessionElapsedTime = new Date().getTime() - this.sessionElapsedTime
+        this.emit(GameEvents.UpdateLeaderboard, {
+          score: this.state.playerOne.score + this.state.playerTwo.score,
+          hasPlayerWon: true,
+          time: this.sessionElapsedTime,
+        })
       })
 
     this.controllerAll
@@ -184,5 +201,10 @@ export class Game extends EventEmitter {
     }
     this.state.paused = !this.state.paused
     this.audioManager.emit('pause', this.state.paused)
+  }
+
+  /** Эмитит событие с данными, которое отлавливается на странице с игрой для обновления лидерборда. */
+  updateLeaderboard(data: StatisticsData): void {
+    this.emit(GameEvents.UpdateLeaderboard, data)
   }
 }
