@@ -6,82 +6,136 @@ import {
   Form,
   Input,
   List,
+  Row,
+  Col,
+  Empty,
   Typography,
+  Skeleton,
 } from 'antd'
-import { useEffect, useState, JSX } from 'react'
-import { useLocation } from 'react-router-dom'
+import * as React from 'react'
+import { useParams } from 'react-router-dom'
 
-import defaultAvatar from '../../assets/defaultAvatar.png'
-import { ForumApi, IComment, ITopic } from '../../services'
+import defaultAvatar from 'assets/defaultAvatar.png'
+import { getHumanReadableDate } from 'utils/getHumanReadableDate'
+import {
+  useAppDispatch,
+  useAppSelector,
+  useIsomorphicLayoutEffect,
+} from 'hooks'
+import {
+  selectCommentsByTopicId,
+  selectTopicById,
+} from 'store/modules/forum/selectors'
+import { ForumTopic } from 'components/ForumTopic'
+import {
+  getTopicComments,
+  getTopics,
+  postComment,
+  selectForum,
+} from 'store/modules/forum/reducer'
+
 import css from './Topic.module.css'
-import { getHumanReadableDate } from '../../utils/getHumanReadableDate'
 
-const { Title, Text } = Typography
+export const Topic: React.FC = () => {
+  const params = useParams()
+  const theme_id = Number(params.forumId)
+  const scrollableRef = React.useRef<HTMLDivElement | null>(null)
 
-export function Topic(): JSX.Element {
-  const { pathname } = useLocation()
-  const path = pathname.split('/')
-  const topicId = path[path.length - 1]
+  const topic = useAppSelector(selectTopicById(theme_id))
+  const isTopicLoading = useAppSelector(selectForum).topicsStatus === 'loading'
+  const comments = useAppSelector(selectCommentsByTopicId(theme_id))
+
+  const dispatch = useAppDispatch()
+
   const [form] = Form.useForm()
-  const [topic, setTopic] = useState<ITopic | null>(null)
-  const [comments, setComments] = useState<IComment[]>([])
-  const forumApi = new ForumApi()
-  const loadData = async (): Promise<void> => {
-    const topic = await forumApi.getTopicById(Number(topicId))
-    const comments = await forumApi.getComments()
 
-    setTopic(topic)
-    setComments(comments)
-  }
-  const addComment = ({ comment }: { comment: string }): void => {
-    setComments(comments => [
-      ...comments,
-      {
-        id: comments.length,
-        createdAt: new Date().toDateString(),
-        content: comment,
-        user: {
-          username: `Test user ${comments.length}`,
-        },
-      },
-    ])
+  React.useEffect(() => {
+    dispatch(getTopics())
+    dispatch(getTopicComments({ theme_id }))
+  }, [dispatch, theme_id])
+
+  useIsomorphicLayoutEffect(() => {
+    scrollableRef.current?.scrollTo({
+      left: 0,
+      top: scrollableRef.current?.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [comments])
+
+  const addComment = ({ message }: { message: string }): void => {
+    dispatch(
+      postComment({
+        message: message.trim(),
+        theme_id,
+      })
+    )
     form.resetFields()
   }
 
-  useEffect(() => {
-    loadData().then()
-  }, [])
+  if (isTopicLoading) {
+    return (
+      <Row>
+        <Col span={4} />
+        <Col span={18}>
+          <Skeleton />
+        </Col>
+        <Col span={4} />
+      </Row>
+    )
+  }
+
+  if (!topic) {
+    return (
+      <Empty
+        description={
+          <Typography.Text>Похоже, здесь ничего нет</Typography.Text>
+        }
+      />
+    )
+  }
 
   return (
-    <Flex className={css.topic} vertical={true}>
-      <Title level={2}>{topic?.title}</Title>
-      <Text className={css.topicContent}>{topic?.content}</Text>
-      <List
-        dataSource={comments}
-        renderItem={({ user, content, createdAt }): JSX.Element => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={defaultAvatar} />}
-              title={user.username}
-              description={content}
+    <Row style={{ height: '100%' }}>
+      <Col span={4} />
+      <Col span={18} style={{ height: '100%' }}>
+        <Flex className={css.topic} vertical={true}>
+          <ForumTopic {...topic} extra={false} />
+          <div ref={scrollableRef} className={css.scrollable}>
+            <List
+              dataSource={comments}
+              locale={{ emptyText: 'Здесь еще ни одного комментария' }}
+              renderItem={({
+                user_display_name,
+                message,
+                createdAt,
+              }): React.ReactNode => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={defaultAvatar} />}
+                    title={user_display_name}
+                    description={message}
+                  />
+                  <p>{getHumanReadableDate(createdAt)}</p>
+                </List.Item>
+              )}
             />
-            <p>{getHumanReadableDate(createdAt)}</p>
-          </List.Item>
-        )}
-      />
-      <Divider />
-      <Form form={form} className={css.form} onFinish={addComment}>
-        <Form.Item
-          name="comment"
-          rules={[{ required: true, message: 'Введите комментарий' }]}>
-          <Input.TextArea placeholder="Введите комментарий" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Отправить
-          </Button>
-        </Form.Item>
-      </Form>
-    </Flex>
+          </div>
+          <Divider />
+          <Form form={form} className={css.form} onFinish={addComment}>
+            <Form.Item
+              name="message"
+              rules={[{ required: true, message: 'Введите комментарий' }]}>
+              <Input.TextArea placeholder="Введите комментарий" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Отправить
+              </Button>
+            </Form.Item>
+          </Form>
+        </Flex>
+      </Col>
+      <Col span={4} />
+    </Row>
   )
 }

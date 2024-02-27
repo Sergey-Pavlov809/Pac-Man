@@ -1,28 +1,67 @@
-import { Client } from 'pg'
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
+import dotenv from 'dotenv'
+import { forum_message, forum_reaction, forum_theme } from './models/forum'
+const isProduction = process.env.NODE_ENV === 'production'
 
-const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
-  process.env
+if (!isProduction) {
+  dotenv.config({ path: '../../.env' })
+}
 
-export const createClientAndConnect = async (): Promise<Client | null> => {
-  try {
-    const client = new Client({
-      user: POSTGRES_USER,
-      host: 'localhost',
-      database: POSTGRES_DB,
-      password: POSTGRES_PASSWORD,
-      port: Number(POSTGRES_PORT),
-    })
+const {
+  POSTGRES_USER,
+  POSTGRES_PASSWORD,
+  POSTGRES_DB,
+  POSTGRES_PORT,
+  POSTGRES_HOST,
+} = process.env
 
-    await client.connect()
+const sequelizeOptions: SequelizeOptions = {
+  host: POSTGRES_HOST,
+  port: Number(POSTGRES_PORT),
+  username: POSTGRES_USER,
+  password: String(POSTGRES_PASSWORD),
+  database: POSTGRES_DB,
+  dialect: 'postgres',
+}
+const sequelize = new Sequelize(sequelizeOptions)
 
-    const res = await client.query('SELECT NOW()')
-    console.log('  ➜ 🎸 Connected to the database at:', res?.rows?.[0].now)
-    client.end()
+const indexes = [
+  {
+    fields: ['theme_id'],
+    unique: false,
+  },
+]
 
-    return client
-  } catch (e) {
-    console.error(e)
+export const ForumTheme = sequelize.define('ForumTheme', forum_theme, {
+  updatedAt: false,
+})
+export const ForumMessage = sequelize.define('ForumMessage', forum_message, {
+  updatedAt: false,
+  indexes,
+})
+export const ForumMessageReaction = sequelize.define(
+  'ForumMessageReaction',
+  forum_reaction,
+  {
+    timestamps: false,
   }
+)
 
-  return null
+ForumTheme.hasMany(ForumMessage, {
+  foreignKey: 'theme_id',
+  onDelete: 'CASCADE',
+})
+ForumTheme.hasMany(ForumMessageReaction, {
+  foreignKey: 'theme_id',
+  onDelete: 'CASCADE',
+})
+
+export async function dbConnect(): Promise<void> {
+  try {
+    await sequelize.authenticate()
+    await sequelize.sync()
+    console.log('Connection has been established successfully.')
+  } catch (error) {
+    console.error('Unable to connect to the database:', error)
+  }
 }

@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import yApiService from '../../../services/y-api-service'
-import { LoginFromApi } from '../../../types/FormApi'
-import { useAppDispatch } from '../../../hooks/useAppDispatch'
-import { fetchUserData } from '../../../store/modules/auth/reducer'
+import { LoginFromApi } from 'types/FormApi'
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppDispatch'
+import {
+  fetchUserData,
+  fetchYandexId,
+  selectAuth,
+} from 'store/modules/auth/reducer'
+import { redirectUrl } from './constants'
+import { useNavigate } from 'react-router-dom'
 
 interface useSignIn {
   isLogin: boolean
   login: (values: LoginFromApi) => Promise<void>
+  yandexOAuthUrl: string
 }
 
 const useSignIn = (): useSignIn => {
@@ -14,26 +21,42 @@ const useSignIn = (): useSignIn => {
 
   const dispatch = useAppDispatch()
 
+  const navigate = useNavigate()
+
+  const { yandexOAuthId } = useAppSelector(selectAuth)
+
+  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${redirectUrl}`
+
+  const navigateToApp = (): void => {
+    navigate('/')
+  }
+
   const login = async (values: LoginFromApi): Promise<void> => {
-    console.log('Received values of form: ', values)
     try {
       const response = await yApiService.login(values)
       dispatch(fetchUserData())
       setIsLogin(true)
       console.log('Result login', response)
       await checkUserAuth()
+      navigateToApp()
     } catch (error) {
       console.log('Error login', error)
     }
   }
 
+  useEffect(() => {
+    dispatch(fetchYandexId())
+  }, [dispatch])
+
   const checkUserAuth = async (): Promise<void> => {
     await yApiService.getUser()
+    navigate('/')
   }
 
   return {
     isLogin,
     login,
+    yandexOAuthUrl,
   }
 }
 

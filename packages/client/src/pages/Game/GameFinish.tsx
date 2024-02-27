@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Button, Typography, Card } from 'antd'
-import { useBrowserNotification } from '../../hooks'
+import { useBrowserNotification, useAppSelector } from 'hooks'
+import { selectGame } from 'store/modules/game/reducer'
 
 import css from './Game.module.css'
 
@@ -13,6 +14,8 @@ export const GameFinish: React.FC<GameStartProps> = ({
   setInProgressStatus,
   setIdleStatus,
 }) => {
+  const score = useAppSelector(selectGame).score
+
   const notificationCb = React.useCallback((event: Event) => {
     event.preventDefault()
     window.open('https://pacman.com/en/', '_blank')
@@ -48,7 +51,7 @@ export const GameFinish: React.FC<GameStartProps> = ({
         ]}>
         <Typography.Title level={3}>Игра завершена</Typography.Title>
         <Typography.Paragraph>
-          Всего вы заработали [количество_очков] очков.
+          Всего вы заработали {score} очков.
         </Typography.Paragraph>
         <Typography.Paragraph style={{ marginBottom: 0 }}>
           Попробовать ещё раз?

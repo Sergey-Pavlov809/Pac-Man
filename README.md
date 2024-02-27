@@ -74,3 +74,21 @@
 
 Если вам понадобится только один сервис, просто уточните какой в команде
 `docker compose up {sevice_name}`, например `docker compose up server`
+
+Демо работы за 7 и 8 спринты
+https://www.loom.com/share/e7d5a06d507e4d6c855f42b66f98f555
+https://www.loom.com/share/1bff9e3a03a947369d874ca2015b87aa
+https://www.loom.com/share/62a9d29fef354919807eed515febfe42
+
+Для запуска приложения в дев режиме необходимо развернуть базу данных с помощью команд:
+docker-compose build
+docker compose up postgres
+
+Далее в корне приложения выполнить команду npm run dev
+
+
+
+### Локальная разработка
+`docker compose up postres` - запустит  БД
+`yarn dev` - запустит фронтенд + бекенд
+

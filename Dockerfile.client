@@ -1,4 +1,4 @@
-ARG NODE_VERSION=16
+ARG NODE_VERSION=18
 ARG CLIENT_PORT=3001
 
 FROM node:$NODE_VERSION-buster as base
@@ -19,7 +19,7 @@ RUN rm -rf /app/packages/client/dist/ && yarn build --scope=client
 FROM nginx:latest as production
 WORKDIR /app
 
-COPY --from=builder /app/packages/client/dist/ /app/
+COPY --from=builder /app/packages/client/dist/client /app/
 COPY --from=builder /app/packages/client/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE $CLIENT_PORT

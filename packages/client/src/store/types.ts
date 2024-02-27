@@ -1,6 +1,6 @@
+import { ForumComment, ForumTopic } from 'types/ForumApi'
 import { store } from './index'
-
-export type AppDispatch = typeof store.dispatch
+import { LeaderBoardItem, UserTheme } from 'types/FormApi'
 
 export interface AuthState {
   id: number | null
@@ -13,6 +13,31 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+  yandexOAuthId?: string
+}
+
+type AsyncStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
+
+export interface LeaderBoardState {
+  items: LeaderBoardItem[] | []
+  status: AsyncStatus
+  error: string | null
+}
+
+export interface ThemeState {
+  userTheme: UserTheme
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: string | null
+}
+
+export interface ForumState {
+  topics: Array<ForumTopic>
+  topicsStatus: AsyncStatus
+  createTopicStatus: AsyncStatus
+  removeTopicStatus: AsyncStatus
+  comments: Array<ForumComment>
+  commentsStatus: AsyncStatus
 }
 
 export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
