@@ -12,6 +12,7 @@ import { PowerUp } from './Power'
 import { GAME_CONFIG } from './const'
 import { selectAuth } from 'store/modules/auth/reducer'
 import { postScores } from 'store/modules/leaderboard/reducer'
+import { GamepadManager } from 'pages/Game/Gamepad'
 
 export const useGameInitialization = (
   {
@@ -35,6 +36,8 @@ export const useGameInitialization = (
 
   let animationId: number
 
+  const gamepadManager = new GamepadManager()
+
   const keys = {
     w: { pressed: false },
     a: { pressed: false },
@@ -43,6 +46,35 @@ export const useGameInitialization = (
   }
 
   let lastKey: string
+
+  const resetKeys = (): void => {
+    keys.a.pressed = false
+    keys.s.pressed = false
+    keys.d.pressed = false
+    keys.w.pressed = false
+  }
+
+  gamepadManager.onStickMove(0, value => {
+    resetKeys()
+    if (value > 0) {
+      keys.d.pressed = true
+      lastKey = 'd'
+    } else {
+      keys.a.pressed = true
+      lastKey = 'a'
+    }
+  })
+
+  gamepadManager.onStickMove(1, value => {
+    resetKeys()
+    if (value > 0) {
+      keys.s.pressed = true
+      lastKey = 's'
+    } else {
+      keys.w.pressed = true
+      lastKey = 'w'
+    }
+  })
 
   const handleKeyDown = ({ keyCode }: { keyCode: number }): void => {
     switch (keyCode) {
@@ -104,6 +136,7 @@ export const useGameInitialization = (
   const exitGame = (): void => {
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('keyup', handleKeyUp)
+    gamepadManager.stop()
     dispatch(setScore(totalScore))
     dispatch(postScores({ login: login ?? 'anonymous', scores: totalScore }))
     setTimeout(() => setFinishStatus(), 500)
@@ -134,6 +167,7 @@ export const useGameInitialization = (
     player: Player,
     ghosts: Ghost[]
   ): void {
+    gamepadManager.update()
     animationId = requestAnimationFrame(() => animate(ctx, player, ghosts))
     ctx.clearRect(0, 0, GAME_CONFIG.gameHeight, GAME_CONFIG.gameHeight)
 
@@ -449,6 +483,7 @@ export const useGameInitialization = (
     ]
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
+    gamepadManager.start()
     animate(ctx, player, ghosts)
   }
 
