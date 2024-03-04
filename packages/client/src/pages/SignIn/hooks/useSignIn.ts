@@ -9,7 +9,7 @@ import {
 } from 'store/modules/auth/reducer'
 import { redirectUrl } from './constants'
 import { useNavigate } from 'react-router-dom'
-import { sanitize } from 'utils/sanitize'
+import { routes } from 'config/routes'
 
 interface useSignIn {
   isLogin: boolean
@@ -29,7 +29,7 @@ const useSignIn = (): useSignIn => {
   const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${redirectUrl}`
 
   const navigateToApp = (): void => {
-    navigate('/')
+    navigate(routes.app(), { replace: true })
   }
 
   const login = async (values: LoginFromApi): Promise<void> => {
@@ -51,7 +51,7 @@ const useSignIn = (): useSignIn => {
 
   const checkUserAuth = async (): Promise<void> => {
     await yApiService.getUser()
-    navigate('/')
+    navigateToApp()
   }
 
   return {

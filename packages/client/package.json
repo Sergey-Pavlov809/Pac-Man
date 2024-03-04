@@ -10,7 +10,7 @@
     "preview": "cross-env NODE_ENV=production node server",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "jest ./"
+    "test": "jest ./ --passWithNoTests"
   },
   "dependencies": {
     "@ant-design/icons": "5.1",

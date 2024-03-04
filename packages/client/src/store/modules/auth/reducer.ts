@@ -24,9 +24,8 @@ export const fetchUserData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await yApiService.getUser()
-    } catch (error) {
-      message.error(`Ошибка загрузки информации о пользователе: ${error}`)
-      return rejectWithValue(error)
+    } catch (error: unknown) {
+      return rejectWithValue((error as Error).message)
     }
   }
 )
@@ -36,7 +35,6 @@ export const fetchYandexId = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await yApiService.getServiceID()
-      console.log(response)
       return response
     } catch (error) {
       message.error(`Ошибка загрузки информации ServiceID: ${error}`)
@@ -50,7 +48,6 @@ export const loginWithYandex = createAsyncThunk(
   async (data: OauthSignInRequest, { rejectWithValue }) => {
     try {
       const response = await yApiService.loginWithYandex(data)
-      console.log(response)
       return response
     } catch (error) {
       message.error(`Ошибка загрузки информации ServiceID: ${error}`)
@@ -99,5 +96,8 @@ export const selectAuth = (state: RootState): AuthState => state.auth
 
 // Селектор для получения id пользователя
 export const getId = (state: RootState): number | null => selectAuth(state).id
+
+export const selectIsAuthorized = (state: RootState): boolean =>
+  selectAuth(state).authorizedStatus === AUTHORIZATION_STATUS.AUTH
 
 export default authReducer

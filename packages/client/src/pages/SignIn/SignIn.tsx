@@ -3,6 +3,7 @@ import { loginValidationSchema } from '../../utils/ruleSchemes'
 import { Link, useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
+import { routes } from 'config/routes'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -24,7 +25,7 @@ export const SignIn: React.FC = () => {
   const { login, yandexOAuthUrl } = useSignIn()
 
   const navigateToSiguUp = (): void => {
-    navigate('/sign-up')
+    navigate(routes.signup())
   }
 
   return (
@@ -37,7 +38,7 @@ export const SignIn: React.FC = () => {
       <Card
         title="Авторизация"
         size="small"
-        headStyle={{ textAlign: 'center' }}
+        styles={{ header: { textAlign: 'center' } }}
         style={{ width: 410 }}>
         <Form form={form} name="login" onFinish={login} layout="vertical">
           <Form.Item

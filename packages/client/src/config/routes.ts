@@ -3,9 +3,8 @@ export const routes = {
   signin: (): string => '/sign-in',
   signup: (): string => '/sign-up',
   profile: (): string => '/profile',
-  main: (): string => '/main',
   game: (): string => '/game',
   leaderboard: (): string => '/leaderboard',
-  forum: (): string => '/chat',
+  forum: (): string => '/forum',
   topic: (): string => '/forum/:forumId',
 }
