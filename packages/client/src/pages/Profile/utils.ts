@@ -1,6 +1,7 @@
 import { message } from 'antd'
 import { PasswordsType, UserType } from './types'
 import { Rule } from 'rc-field-form/lib/interface'
+import { sanitize } from 'utils/sanitize'
 
 export const initialData = {
   first_name: '',
@@ -76,10 +77,11 @@ export const fetchData = async (
 }
 
 export const changePassword = async (
-  data: PasswordsType,
+  passwordData: PasswordsType,
   calback: () => void
 ): Promise<void> => {
   try {
+    const data = sanitize(passwordData)
     const response = await fetch(`${baseApi}/user/password`, {
       method: 'PUT',
       headers: {
