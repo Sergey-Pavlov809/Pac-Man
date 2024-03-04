@@ -47,8 +47,7 @@ export const loginWithYandex = createAsyncThunk(
   'auth/loginWithYandex',
   async (data: OauthSignInRequest, { rejectWithValue }) => {
     try {
-      const response = await yApiService.loginWithYandex(data)
-      return response
+      await yApiService.loginWithYandex(data)
     } catch (error) {
       message.error(`Ошибка загрузки информации ServiceID: ${error}`)
       return rejectWithValue(error)

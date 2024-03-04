@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import { AppLayout } from '../components'
 import {
@@ -16,19 +16,38 @@ import {
 } from '../pages'
 
 import { routes } from 'config/routes'
-import { useAppDispatch, useAppSelector } from 'hooks'
-import { fetchUserData, selectIsAuthorized } from 'store/modules/auth/reducer'
+import { useAppDispatch, useAppSelector, useQuery } from 'hooks'
+import {
+  fetchUserData,
+  loginWithYandex,
+  selectIsAuthorized,
+} from 'store/modules/auth/reducer'
 import { ProtectedRoute } from './protected-route'
 
 export const AppRouter: React.FC = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const search = useQuery()
   const isAuthorized = useAppSelector(selectIsAuthorized)
 
   React.useEffect(() => {
-    if (!isAuthorized) {
+    const code = search.get('code')
+    if (code) {
+      dispatch(
+        loginWithYandex({
+          code,
+          redirect_uri: window.location.origin,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          navigate(routes.app())
+        })
+    }
+    if (!code && !isAuthorized) {
       dispatch(fetchUserData())
     }
-  }, [dispatch, isAuthorized])
+  }, [dispatch, isAuthorized, navigate, search])
 
   return (
     <Routes>
@@ -41,7 +60,13 @@ export const AppRouter: React.FC = () => {
               <Profile />
             </ProtectedRoute>
           }></Route>
-        <Route path={routes.game()} element={<GamePage />}></Route>
+        <Route
+          path={routes.game()}
+          element={
+            <ProtectedRoute>
+              <GamePage />
+            </ProtectedRoute>
+          }></Route>
         <Route
           path={routes.leaderboard()}
           element={

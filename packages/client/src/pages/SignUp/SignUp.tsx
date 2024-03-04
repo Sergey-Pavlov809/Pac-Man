@@ -29,7 +29,6 @@ export const SignUp: React.FC = () => {
   }
 
   const onFinish = async (values: RegistrationFromApi): Promise<void> => {
-    console.log('Received values of form: ', values)
     try {
       const response = await yApiService.register(values)
       console.log('Result register', response)
@@ -60,7 +59,7 @@ export const SignUp: React.FC = () => {
       <Card
         title="Регистрация"
         size="small"
-        styles={{ header: { textAlign: 'center' } }}
+        headStyle={{ textAlign: 'center' }}
         style={{ width: 410 }}>
         <Form
           form={form}
