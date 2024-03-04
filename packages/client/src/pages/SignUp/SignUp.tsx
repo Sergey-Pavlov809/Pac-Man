@@ -4,6 +4,7 @@ import { RuleObject } from 'rc-field-form/lib/interface'
 import yApiService from 'services/y-api-service'
 import { RegistrationFromApi } from 'types/FormApi'
 import { useNavigate } from 'react-router-dom'
+import { routes } from 'config/routes'
 
 const tailFormItemLayout = {
   wrapperCol: {
@@ -24,7 +25,7 @@ export const SignUp: React.FC = () => {
   const navigate = useNavigate()
 
   const navigateToApp = (): void => {
-    navigate('/')
+    navigate(routes.app())
   }
 
   const onFinish = async (values: RegistrationFromApi): Promise<void> => {
@@ -59,7 +60,7 @@ export const SignUp: React.FC = () => {
       <Card
         title="Регистрация"
         size="small"
-        headStyle={{ textAlign: 'center' }}
+        styles={{ header: { textAlign: 'center' } }}
         style={{ width: 410 }}>
         <Form
           form={form}

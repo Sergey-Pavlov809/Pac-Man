@@ -21,8 +21,6 @@ export const fieldStyle = {
   margin: '12px 0',
 }
 
-export const isAuthenticated = true
-
 export const baseApi = `${import.meta.env.VITE_API_ENDPOINT}/api/v2`
 
 export const passwordValidator: Rule[] = [

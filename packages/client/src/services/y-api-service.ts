@@ -41,7 +41,12 @@ const yApiService = {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-    }).then(response => response.json())
+    }).then(response => {
+      if (!response.ok) {
+        throw new Error('Нет авторизации')
+      }
+      return response.json()
+    })
   },
 
   getServiceID(): Promise<ServiceIdApi> {
