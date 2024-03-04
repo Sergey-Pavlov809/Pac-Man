@@ -29,7 +29,7 @@ app.use(
     cookieDomainRewrite: {
       '*': '',
     },
-    target: process.env.API_YANDEX_BASEURL,
+    target: 'https://ya-praktikum.tech',
   })
 )
 
