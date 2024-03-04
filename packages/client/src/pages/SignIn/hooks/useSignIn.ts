@@ -9,6 +9,7 @@ import {
 } from 'store/modules/auth/reducer'
 import { redirectUrl } from './constants'
 import { useNavigate } from 'react-router-dom'
+import { sanitize } from 'utils/sanitize'
 
 interface useSignIn {
   isLogin: boolean

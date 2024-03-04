@@ -7,28 +7,31 @@ import {
   ServiceIdApi,
 } from 'types/FormApi'
 import { ratingFieldName } from 'utils/consts'
+import { sanitize } from 'utils/sanitize'
 
 export const Y_API_BASE_URL = `${import.meta.env.VITE_API_ENDPOINT}/api/v2`
 
 const yApiService = {
   login(userData: LoginFromApi): Promise<Response> {
+    const data = sanitize(userData as unknown)
     return fetch(`${Y_API_BASE_URL}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify(userData),
+      body: JSON.stringify(data),
     })
   },
   register(userData: RegistrationFromApi): Promise<{ id: string }> {
+    const data = sanitize(userData as unknown)
     return fetch(`${Y_API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify(userData),
+      body: JSON.stringify(data),
     }).then(response => response.json())
   },
   getUser(): Promise<UserFromApi> {
@@ -52,13 +55,14 @@ const yApiService = {
   },
 
   loginWithYandex(params: OauthSignInRequest): Promise<Response> {
+    const data = sanitize(params)
     return fetch(`${Y_API_BASE_URL}/oauth/yandex`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify(params),
+      body: JSON.stringify(data),
     })
   },
   getLeaderBoard(): Promise<LeaderBoardApi[]> {
