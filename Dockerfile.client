@@ -13,6 +13,9 @@ RUN yarn install --frozen-lockfile
 COPY . .
 
 RUN yarn lerna bootstrap
-RUN yarn dev --scope=client
 
+FROM nginx:latest as production
+WORKDIR /app
 
+EXPOSE $CLIENT_PORT
+CMD [ "npm", "run", "dev" ]
