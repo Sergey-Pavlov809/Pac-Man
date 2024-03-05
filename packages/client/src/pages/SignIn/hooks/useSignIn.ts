@@ -7,7 +7,6 @@ import {
   fetchYandexId,
   selectAuth,
 } from 'store/modules/auth/reducer'
-import { redirectUrl } from './constants'
 import { useNavigate } from 'react-router-dom'
 import { routes } from 'config/routes'
 
@@ -26,7 +25,9 @@ const useSignIn = (): useSignIn => {
 
   const { yandexOAuthId } = useAppSelector(selectAuth)
 
-  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${redirectUrl}`
+  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${
+    import.meta.env.SSR ? '' : window.location.origin
+  }`
 
   const navigateToApp = (): void => {
     navigate(routes.app(), { replace: true })
