@@ -50,13 +50,16 @@ const yApiService = {
   },
 
   getServiceID(): Promise<ServiceIdApi> {
-    return fetch(`${Y_API_BASE_URL}/oauth/yandex/service-id`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-    }).then(response => response.json())
+    return fetch(
+      `${Y_API_BASE_URL}/oauth/yandex/service-id?redirect_uri=${window.location.origin}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      }
+    ).then(response => response.json())
   },
 
   loginWithYandex(params: OauthSignInRequest): Promise<Response> {

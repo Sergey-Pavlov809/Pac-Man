@@ -1,6 +1,5 @@
 import { Button, Form, Input, Flex, Card } from 'antd'
 import { loginValidationSchema } from '../../utils/ruleSchemes'
-import { Link, useNavigate } from 'react-router-dom'
 
 import useSignIn from './hooks/useSignIn'
 import { routes } from 'config/routes'
@@ -20,13 +19,8 @@ const tailFormItemLayout = {
 
 export const SignIn: React.FC = () => {
   const [form] = Form.useForm()
-  const navigate = useNavigate()
 
   const { login, yandexOAuthUrl } = useSignIn()
-
-  const navigateToSiguUp = (): void => {
-    navigate(routes.signup())
-  }
 
   return (
     <Flex
@@ -38,7 +32,7 @@ export const SignIn: React.FC = () => {
       <Card
         title="Авторизация"
         size="small"
-        styles={{ header: { textAlign: 'center' } }}
+        headStyle={{ textAlign: 'center' }}
         style={{ width: 410 }}>
         <Form form={form} name="login" onFinish={login} layout="vertical">
           <Form.Item
@@ -61,14 +55,16 @@ export const SignIn: React.FC = () => {
             </Button>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
-            <Link to={yandexOAuthUrl}>Войти с помощью yandex</Link>
+            <Button
+              suppressHydrationWarning
+              type="link"
+              block
+              href={yandexOAuthUrl}>
+              Войти с помощью Yandex
+            </Button>
           </Form.Item>
           <Form.Item {...tailFormItemLayout}>
-            <Button
-              type="link"
-              htmlType="submit"
-              block
-              onClick={navigateToSiguUp}>
+            <Button type="link" block href={routes.signup()}>
               Нет аккаунта?
             </Button>
           </Form.Item>

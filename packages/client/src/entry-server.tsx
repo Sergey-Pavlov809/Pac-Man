@@ -18,7 +18,6 @@ export async function render(
   styleText: string
 }> {
   const cache = createCache()
-  const styleText = extractStyle(cache)
   const initialStore = {
     ...store.getState(),
     theme: {
@@ -46,5 +45,5 @@ export async function render(
       </StyleProvider>
     </Provider>
   )
-  return { initialStore, renderResult, styleText }
+  return { initialStore, renderResult, styleText: extractStyle(cache) }
 }
