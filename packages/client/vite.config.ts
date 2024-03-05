@@ -9,12 +9,6 @@ dotenv.config()
 export default defineConfig({
   server: {
     port: Number(process.env.CLIENT_PORT) || 3000,
-    proxy: {
-      'http://localhost:3001': {
-        target: 'https://ya-praktikum.tech',
-        changeOrigin: true,
-      },
-    },
   },
   define: {
     __SERVER_PORT__: process.env.SERVER_PORT,
