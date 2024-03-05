@@ -18,4 +18,4 @@ FROM nginx:latest as production
 WORKDIR /app
 
 EXPOSE $CLIENT_PORT
-CMD [ "npm", "run", "dev" ]
+CMD [ "yarn", "run", "dev" ]
